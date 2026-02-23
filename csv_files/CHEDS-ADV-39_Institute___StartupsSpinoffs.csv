@@ -1,0 +1,33 @@
+﻿Startup_Inst_Code,Startup_Institution_Name,Startup_Academic_Year,Startup_Year,Startup_Name,Startup_Trade_License,Startup_Status,Startup_Founders_Ids,Startup_Std_Prog_code,Startup_fac_research_title,Last_Updated
+61,Abu Dhabi University,202425,2024,Noor Khan,"14/980,961",Active,"A1092, B2015,c12345",1.DR.10001,Applied Pharmacy,2022-11-05
+47,American University of Sharjah,202526,2025,Latifa Khan,"14/980,961",Inactive,"A1092, B2015,c12345",1.DR.10001,Principles of Education,2023-10-25
+33,British University in Dubai,202425,2025,Latifa Khan,"14/980,961",Inactive,"A1092, B2015,c12345",1.DR.10001,Introduction to Civil Engineering,2024-09-19
+33,American University of Sharjah,202526,2024,Ali Al Mansoori,"14/980,961",Pending,"A1092, B2015,c12345",1.DR.10001,Advanced Biology,2023-03-04
+98,Ajman University,202425,2024,Noor Al Junaibi,"14/980,961",Active,"A1092, B2015,c12345",1.DR.10001,Advanced History,2021-02-03
+5,Dubai Medical College,202526,2024,Fatima Al Shamsi,"14/980,961",Pending,"A1092, B2015,c12345",1.DR.10001,Introduction to Chemistry,2021-12-15
+3,American University in Dubai,202425,2024,Majid Al Junaibi,"14/980,961",In Progress,"A1092, B2015,c12345",1.DR.10001,Advanced Chemistry,2025-08-14
+10,Zayed University,202526,2025,Saeed Al Nuaimi,"14/980,961",Inactive,"A1092, B2015,c12345",1.DR.10001,Principles of Law,2024-10-22
+54,Abu Dhabi University,202425,2024,Majid Al Dhaheri,"14/980,961",Inactive,"A1092, B2015,c12345",1.DR.10001,Advanced Pharmacy,2025-10-03
+32,University of Sharjah,202526,2024,Omar Al Kaabi,"14/980,961",In Progress,"A1092, B2015,c12345",1.DR.10001,Principles of Computer Science,2020-04-21
+25,American University of Sharjah,202425,2025,Hessa Al Kaabi,"14/980,961",In Progress,"A1092, B2015,c12345",1.DR.10001,Applied History,2024-03-22
+38,American University of Sharjah,202526,2025,Aisha Al Nuaimi,"14/980,961",Completed,"A1092, B2015,c12345",1.DR.10001,Advanced Education,2020-04-05
+76,American University in Dubai,202425,2024,Mohammed Al Falasi,"14/980,961",Pending,"A1092, B2015,c12345",1.DR.10001,Applied Accounting,2024-08-14
+96,United Arab Emirates University,202526,2025,Latifa Al Mehairbi,"14/980,961",Completed,"A1092, B2015,c12345",1.DR.10001,Introduction to Medicine,2025-09-26
+73,Ajman University,202425,2024,Majid Al Falasi,"14/980,961",Pending,"A1092, B2015,c12345",1.DR.10001,Principles of Law,2020-10-10
+91,Abu Dhabi University,202526,2025,Sara Al Kaabi,"14/980,961",Inactive,"A1092, B2015,c12345",1.DR.10001,Advanced Pharmacy,2023-11-29
+13,Dubai Medical College,202526,2024,Salem Patel,"14/980,961",In Progress,"A1092, B2015,c12345",1.DR.10001,Applied Electrical Engineering,2024-02-21
+97,Abu Dhabi University,202526,2025,Maryam Al Zaabi,"14/980,961",Inactive,"A1092, B2015,c12345",1.DR.10001,Applied Medicine,2025-04-15
+99,British University in Dubai,202425,2024,Shamma Al Shamsi,"14/980,961",In Progress,"A1092, B2015,c12345",1.DR.10001,Introduction to English Literature,2020-04-05
+15,Khalifa University,202526,2025,Maryam Al Nuaimi,"14/980,961",Pending,"A1092, B2015,c12345",1.DR.10001,Applied Psychology,2021-06-16
+73,American University in Dubai,202526,2024,Hessa Singh,"14/980,961",Pending,"A1092, B2015,c12345",1.DR.10001,Introduction to Mathematics,2020-12-09
+52,Zayed University,202425,2024,Maitha Al Shamsi,"14/980,961",Pending,"A1092, B2015,c12345",1.DR.10001,Applied Electrical Engineering,2022-09-30
+98,American University of Sharjah,202425,2025,Ahmed Khan,"14/980,961",In Progress,"A1092, B2015,c12345",1.DR.10001,Applied Mathematics,2020-04-14
+86,American University of Sharjah,202526,2024,Saeed Singh,"14/980,961",In Progress,"A1092, B2015,c12345",1.DR.10001,Introduction to Marketing,2021-04-27
+51,Khalifa University,202526,2024,Fatima Al Kaabi,"14/980,961",Completed,"A1092, B2015,c12345",1.DR.10001,Principles of Chemistry,2022-01-30
+86,American University of Sharjah,202425,2024,Noor Al Junaibi,"14/980,961",Pending,"A1092, B2015,c12345",1.DR.10001,Applied Electrical Engineering,2020-06-07
+47,Ajman University,202526,2024,Ahmed Al Shamsi,"14/980,961",Pending,"A1092, B2015,c12345",1.DR.10001,Introduction to Law,2020-02-23
+64,Khalifa University,202425,2024,Latifa Hassan,"14/980,961",Completed,"A1092, B2015,c12345",1.DR.10001,Principles of Physics,2022-10-01
+1,Dubai Medical College,202526,2025,Amna Al Kaabi,"14/980,961",In Progress,"A1092, B2015,c12345",1.DR.10001,Principles of Pharmacy,2023-10-10
+55,Khalifa University,202425,2024,Ali Al Zaabi,"14/980,961",In Progress,"A1092, B2015,c12345",1.DR.10001,Advanced Physics,2024-07-02
+82,University of Sharjah,202526,2025,Shamma Patel,"14/980,961",In Progress,"A1092, B2015,c12345",1.DR.10001,Introduction to Chemistry,2020-04-24
+92,British University in Dubai,202425,2025,Maryam Al Falasi,"14/980,961",Active,"A1092, B2015,c12345",1.DR.10001,Principles of Finance,2022-09-16

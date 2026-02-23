@@ -1,0 +1,33 @@
+﻿Course_Institution_Code,Course_Institution_Name,Course_Program_Name,Course_Academic_Period,Course_Name,Course_code,Course_CRN,Course_faculty_type,Course_FacID,Course_FacName,Course_IndustryName,Course_CRN,Course_teaching_percent,Course_design_percent,Last_Updated
+82,American University in Dubai,BA in Mathematics,202501,Advanced Mathematics,CS101,glen@microsoft.com,Online,AY2001010,Glen Thomas,Microsoft,glen@microsoft.com,62.81,95.29,2020-03-06
+83,British University in Dubai,PhD in Marketing,202502,Physics I,CS101,glen@microsoft.com,Full-time,AY2001010,Glen Thomas,Microsoft,glen@microsoft.com,51.49,83.54,2020-06-28
+84,Dubai Medical College,MBA in Marketing,202503,Data Structures,CS101,glen@microsoft.com,Part-time,AY2001010,Glen Thomas,Microsoft,glen@microsoft.com,86.36,88.84,2024-11-12
+81,Ajman University,BA in Mechanical Engineering,202403,Organic Chemistry,CS101,glen@microsoft.com,Full-time,AY2001010,Glen Thomas,Microsoft,glen@microsoft.com,88.85,57.03,2020-10-18
+79,University of Sharjah,CRT in Medicine,202502,Physics I,CS101,glen@microsoft.com,Part-time,AY2001010,Glen Thomas,Microsoft,glen@microsoft.com,88.94,68.92,2023-12-21
+75,United Arab Emirates University,BS in Civil Engineering,202502,Project Management,CS101,glen@microsoft.com,Part-time,AY2001010,Glen Thomas,Microsoft,glen@microsoft.com,52.65,59.06,2025-07-01
+75,United Arab Emirates University,BA in Architecture,202501,Project Management,CS101,glen@microsoft.com,Online,AY2001010,Glen Thomas,Microsoft,glen@microsoft.com,99.66,91.19,2025-09-17
+79,University of Sharjah,PhD in Marketing,202403,Operating Systems,CS101,glen@microsoft.com,Online,AY2001010,Glen Thomas,Microsoft,glen@microsoft.com,53.36,81.99,2025-05-03
+79,University of Sharjah,BS in Computer Science,202403,Operating Systems,CS101,glen@microsoft.com,Part-time,AY2001010,Glen Thomas,Microsoft,glen@microsoft.com,93.55,69.4,2024-06-10
+79,University of Sharjah,BA in Civil Engineering,202403,Corporate Finance,CS101,glen@microsoft.com,Part-time,AY2001010,Glen Thomas,Microsoft,glen@microsoft.com,83.84,57.25,2023-08-04
+83,British University in Dubai,CRT in Islamic Studies,202502,Business Ethics,CS101,glen@microsoft.com,Online,AY2001010,Glen Thomas,Microsoft,glen@microsoft.com,88.19,72.91,2024-10-01
+78,American University of Sharjah,PhD in Business Administration,202502,Engineering Mechanics,CS101,glen@microsoft.com,Part-time,AY2001010,Glen Thomas,Microsoft,glen@microsoft.com,65.29,65.87,2022-01-15
+78,American University of Sharjah,MBA in Arabic Studies,202503,Database Systems,CS101,glen@microsoft.com,Online,AY2001010,Glen Thomas,Microsoft,glen@microsoft.com,56.3,84.48,2020-11-01
+81,Ajman University,PhD in Islamic Studies,202501,Introduction to Computer Science,CS101,glen@microsoft.com,Online,AY2001010,Glen Thomas,Microsoft,glen@microsoft.com,63.57,65.14,2024-08-07
+75,United Arab Emirates University,CRT in Mechanical Engineering,202401,Financial Accounting,CS101,glen@microsoft.com,Full-time,AY2001010,Glen Thomas,Microsoft,glen@microsoft.com,81.88,53.99,2024-03-11
+83,British University in Dubai,PhD in Physics,202502,Corporate Finance,CS101,glen@microsoft.com,Full-time,AY2001010,Glen Thomas,Microsoft,glen@microsoft.com,82.45,75.26,2021-10-27
+84,Dubai Medical College,CRT in Accounting,202401,Business Ethics,CS101,glen@microsoft.com,Online,AY2001010,Glen Thomas,Microsoft,glen@microsoft.com,76.81,98.58,2025-12-16
+76,Zayed University,MBA in Marketing,202501,Machine Learning,CS101,glen@microsoft.com,Online,AY2001010,Glen Thomas,Microsoft,glen@microsoft.com,60.27,58.64,2020-02-18
+76,Zayed University,BS in Medicine,202402,Human Resource Management,CS101,glen@microsoft.com,Full-time,AY2001010,Glen Thomas,Microsoft,glen@microsoft.com,86.03,84.9,2020-05-27
+81,Ajman University,PhD in Law,202402,Network Security,CS101,glen@microsoft.com,Online,AY2001010,Glen Thomas,Microsoft,glen@microsoft.com,85.14,96.21,2025-12-27
+81,Ajman University,PhD in English Literature,202402,Human Resource Management,CS101,glen@microsoft.com,Online,AY2001010,Glen Thomas,Microsoft,glen@microsoft.com,61.43,58.0,2022-10-30
+77,Khalifa University,MBA in Architecture,202403,Marketing Management,CS101,glen@microsoft.com,Online,AY2001010,Glen Thomas,Microsoft,glen@microsoft.com,98.38,71.22,2025-10-22
+77,Khalifa University,MBA in Electrical Engineering,202502,Organic Chemistry,CS101,glen@microsoft.com,Full-time,AY2001010,Glen Thomas,Microsoft,glen@microsoft.com,79.16,62.0,2022-05-04
+75,United Arab Emirates University,MA in Physics,202503,Corporate Finance,CS101,glen@microsoft.com,Full-time,AY2001010,Glen Thomas,Microsoft,glen@microsoft.com,96.51,50.6,2023-07-06
+75,United Arab Emirates University,MBA in Computer Science,202501,Corporate Finance,CS101,glen@microsoft.com,Part-time,AY2001010,Glen Thomas,Microsoft,glen@microsoft.com,85.81,52.16,2025-01-14
+78,American University of Sharjah,MBA in Accounting,202401,Advanced Mathematics,CS101,glen@microsoft.com,Online,AY2001010,Glen Thomas,Microsoft,glen@microsoft.com,86.76,75.84,2025-10-16
+77,Khalifa University,PhD in Chemistry,202502,Engineering Mechanics,CS101,glen@microsoft.com,Online,AY2001010,Glen Thomas,Microsoft,glen@microsoft.com,85.35,62.71,2023-04-05
+83,British University in Dubai,MA in Mathematics,202402,Network Security,CS101,glen@microsoft.com,Part-time,AY2001010,Glen Thomas,Microsoft,glen@microsoft.com,73.56,53.83,2022-05-31
+83,British University in Dubai,DIP in Sociology,202402,Data Structures,CS101,glen@microsoft.com,Online,AY2001010,Glen Thomas,Microsoft,glen@microsoft.com,92.47,57.48,2021-09-26
+81,Ajman University,MS in Accounting,202501,Machine Learning,CS101,glen@microsoft.com,Full-time,AY2001010,Glen Thomas,Microsoft,glen@microsoft.com,76.65,95.71,2023-10-05
+83,British University in Dubai,MBA in Biology,202503,Engineering Mechanics,CS101,glen@microsoft.com,Full-time,AY2001010,Glen Thomas,Microsoft,glen@microsoft.com,64.56,51.42,2022-06-08
+82,American University in Dubai,CRT in Arabic Studies,202401,Marketing Management,CS101,glen@microsoft.com,Full-time,AY2001010,Glen Thomas,Microsoft,glen@microsoft.com,67.94,87.29,2024-04-17

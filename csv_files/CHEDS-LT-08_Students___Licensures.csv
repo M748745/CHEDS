@@ -1,0 +1,77 @@
+﻿SLC_Institution_Code,SLC_Institution_Name,SLC_Academic_Period,SLC_Student_ID,SLC_Student_Level,SLC_Student_Degree,SLC_Program_Code,SLC_LC_Name,SLC_Org_name,SLC_Org_website,SLC_status,SLC_date,SLC_LC_number,SLC_comments,SLC_submission_term,Last_Updated
+83,British University in Dubai,202502,STU202431781,FR,BA,1.DR.10001,Omar Hassan,Shamma Singh,https://www.institution.ac.ae/research,Inactive,2025-05-15,Default,Primary,85,2020-04-05
+78,American University of Sharjah,202501,STU202195636,FR,BS,1.DR.10001,Sheikha Al Junaibi,Sara Patel,https://www.institution.ac.ae/faculty,Completed,2020-06-29,Regular,Standard,77,2024-10-07
+76,Zayed University,202501,STU202468704,FR,MS,1.DR.10001,Sultan Al Dhaheri,Sara Al Shamsi,https://www.institution.ac.ae/research,Active,2022-10-23,Primary,Primary,99,2022-11-01
+79,University of Sharjah,202402,STU202556909,FR,MA,1.DR.10001,Mohammed Patel,Fatima Al Junaibi,https://www.institution.ac.ae/programs,Pending,2023-02-27,Regular,Regular,89,2023-10-25
+81,Ajman University,202503,STU202557915,FR,BS,1.DR.10001,Shamma Singh,Sultan Al Shamsi,https://www.institution.ac.ae/faculty,Inactive,2023-04-03,Standard,Default,94,2021-05-23
+82,American University in Dubai,202502,STU202476361,FR,PhD,1.DR.10001,Sheikha Al Falasi,Salem Al Falasi,https://www.institution.ac.ae/faculty,In Progress,2020-06-21,Standard,Regular,11,2023-09-19
+78,American University of Sharjah,202503,STU202425959,FR,DIP,1.DR.10001,Ahmed Al Mazrouei,Majid Al Dhaheri,https://www.institution.ac.ae/faculty,Active,2021-06-05,Standard,Primary,63,2020-08-24
+79,University of Sharjah,202403,STU202524825,FR,PhD,1.DR.10001,Sheikha Patel,Majid Al Mazrouei,https://www.institution.ac.ae/programs,Inactive,2025-04-07,Primary,Regular,71,2024-01-03
+84,Dubai Medical College,202403,STU202582826,FR,CRT,1.DR.10001,Khalid Al Falasi,Mohammed Al Zaabi,https://www.institution.ac.ae/research,In Progress,2024-01-03,Standard,Standard,12,2023-09-15
+75,United Arab Emirates University,202503,STU202453487,FR,MBA,1.DR.10001,Majid Al Kaabi,Maitha Al Dhaheri,https://www.institution.ac.ae/research,Pending,2020-07-17,Default,Normal,65,2020-03-13
+80,Abu Dhabi University,202503,STU202164755,FR,DIP,1.DR.10001,Salem Al Mansoori,Noura Ahmed,https://www.institution.ac.ae/faculty,Inactive,2025-10-27,Regular,Primary,32,2020-08-22
+77,Khalifa University,202501,STU202346604,FR,BS,1.DR.10001,Hassan Singh,Ahmed Al Nuaimi,https://www.institution.ac.ae/faculty,Pending,2021-04-02,Default,Primary,17,2020-03-14
+81,Ajman University,202403,STU202434900,FR,BA,1.DR.10001,Sheikha Hassan,Sultan Al Shamsi,https://www.institution.ac.ae/research,Completed,2022-05-21,Normal,Regular,2,2021-11-15
+75,United Arab Emirates University,202402,STU202117754,FR,MBA,1.DR.10001,Omar Al Junaibi,Sheikha Khan,https://www.institution.ac.ae/programs,In Progress,2023-10-01,Default,Regular,44,2021-09-02
+77,Khalifa University,202403,STU202577695,FR,PhD,1.DR.10001,Hessa Al Nuaimi,Aisha Al Mansoori,https://www.institution.ac.ae/faculty,In Progress,2022-02-26,Default,Standard,71,2022-04-01
+80,Abu Dhabi University,202401,STU202213293,FR,DIP,1.DR.10001,Maitha Patel,Abdullah Al Junaibi,https://www.institution.ac.ae/programs,In Progress,2020-03-08,Standard,Primary,60,2023-08-20
+76,Zayed University,202403,STU202390846,FR,PhD,1.DR.10001,Maitha Al Nuaimi,Abdullah Al Shamsi,https://www.institution.ac.ae/programs,Completed,2021-06-11,Regular,Primary,99,2024-02-13
+76,Zayed University,202402,STU202231168,FR,DIP,1.DR.10001,Rashid Khan,Hessa Al Shamsi,https://www.institution.ac.ae/faculty,Inactive,2023-10-13,Normal,Regular,49,2021-12-14
+75,United Arab Emirates University,202401,STU202532950,FR,CRT,1.DR.10001,Fatima Al Nuaimi,Sara Al Nuaimi,https://www.institution.ac.ae/research,Completed,2021-11-02,Standard,Normal,53,2021-02-17
+79,University of Sharjah,202501,STU202442073,FR,MBA,1.DR.10001,Noor Singh,Noor Al Junaibi,https://www.institution.ac.ae/research,Completed,2025-01-14,Normal,Default,20,2025-03-15
+75,United Arab Emirates University,202401,STU202278751,FR,MS,1.DR.10001,Mohammed Al Mehairbi,Amna Al Mazrouei,https://www.institution.ac.ae/faculty,In Progress,2024-06-07,Default,Regular,81,2023-01-23
+77,Khalifa University,202403,STU202174963,FR,DIP,1.DR.10001,Aisha Al Shamsi,Maitha Al Falasi,https://www.institution.ac.ae/faculty,Completed,2022-09-27,Normal,Standard,72,2025-03-26
+76,Zayed University,202402,STU202143363,FR,MS,1.DR.10001,Sheikha Al Mansoori,Sheikha Singh,https://www.institution.ac.ae/research,In Progress,2022-07-29,Regular,Regular,43,2022-12-30
+76,Zayed University,202402,STU202523015,FR,MA,1.DR.10001,Omar Al Mazrouei,Noor Hassan,https://www.institution.ac.ae/programs,In Progress,2024-05-21,Standard,Normal,21,2025-07-14
+82,American University in Dubai,202402,STU202022794,FR,BA,1.DR.10001,Aisha Al Mansoori,Hessa Ahmed,https://www.institution.ac.ae/programs,In Progress,2020-11-19,Regular,Primary,78,2022-12-03
+80,Abu Dhabi University,202501,STU202492674,FR,MA,1.DR.10001,Hessa Al Dhaheri,Ahmed Al Mehairbi,https://www.institution.ac.ae/programs,Pending,2021-03-12,Default,Regular,92,2022-07-20
+82,American University in Dubai,202503,STU202375217,FR,BA,1.DR.10001,Salem Ahmed,Noura Al Falasi,https://www.institution.ac.ae/programs,Inactive,2023-12-07,Standard,Primary,58,2020-03-22
+84,Dubai Medical College,202402,STU202342918,FR,MA,1.DR.10001,Majid Al Nuaimi,Ali Al Zaabi,https://www.institution.ac.ae/faculty,Active,2024-03-28,Normal,Regular,5,2024-03-09
+77,Khalifa University,202503,STU202256382,FR,MS,1.DR.10001,Ahmed Al Nuaimi,Noor Patel,https://www.institution.ac.ae/faculty,In Progress,2020-09-21,Standard,Regular,40,2022-12-18
+75,United Arab Emirates University,202403,STU202046232,FR,MS,1.DR.10001,Rashid Patel,Rashid Al Junaibi,https://www.institution.ac.ae/programs,Inactive,2025-07-06,Normal,Default,68,2020-03-11
+78,American University of Sharjah,202501,STU202272042,FR,BS,1.DR.10001,Latifa Al Dhaheri,Noura Al Zaabi,https://www.institution.ac.ae/research,Completed,2022-09-13,Normal,Default,47,2025-03-24
+76,Zayed University,202503,STU202073478,FR,BS,1.DR.10001,Sultan Singh,Amna Al Kaabi,https://www.institution.ac.ae/research,Pending,2021-01-22,Regular,Standard,13,2022-11-01
+81,Ajman University,202501,STU202429776,FR,CRT,1.DR.10001,Maitha Al Junaibi,Amna Khan,https://www.institution.ac.ae/programs,Inactive,2024-05-04,Normal,Default,86,2020-07-19
+76,Zayed University,202502,STU202032217,FR,MBA,1.DR.10001,Abdullah Singh,Mohammed Patel,https://www.institution.ac.ae/faculty,Active,2020-07-23,Regular,Primary,13,2024-04-03
+80,Abu Dhabi University,202503,STU202370316,FR,MA,1.DR.10001,Sheikha Al Dhaheri,Sara Al Falasi,https://www.institution.ac.ae/research,Completed,2020-12-22,Normal,Normal,5,2023-10-12
+83,British University in Dubai,202403,STU202031255,FR,CRT,1.DR.10001,Sara Al Shamsi,Khalid Al Zaabi,https://www.institution.ac.ae/research,In Progress,2024-12-28,Primary,Primary,10,2020-01-30
+78,American University of Sharjah,202503,STU202127595,FR,MBA,1.DR.10001,Amna Al Zaabi,Rashid Patel,https://www.institution.ac.ae/programs,Inactive,2024-11-09,Normal,Primary,11,2020-11-03
+84,Dubai Medical College,202402,STU202555487,FR,CRT,1.DR.10001,Amna Al Mehairbi,Sheikha Al Mehairbi,https://www.institution.ac.ae/programs,Pending,2020-01-20,Normal,Default,36,2022-06-20
+79,University of Sharjah,202502,STU202478547,FR,PhD,1.DR.10001,Hessa Al Nuaimi,Mohammed Khan,https://www.institution.ac.ae/research,Completed,2022-05-16,Normal,Standard,8,2025-11-01
+82,American University in Dubai,202502,STU202276908,FR,DIP,1.DR.10001,Ahmed Al Shamsi,Ahmed Al Falasi,https://www.institution.ac.ae/faculty,In Progress,2023-10-05,Standard,Normal,40,2025-09-26
+79,University of Sharjah,202501,STU202260983,FR,BS,1.DR.10001,Omar Khan,Aisha Al Shamsi,https://www.institution.ac.ae/research,Inactive,2023-07-21,Primary,Regular,51,2020-07-11
+80,Abu Dhabi University,202402,STU202299425,FR,BS,1.DR.10001,Latifa Patel,Rashid Al Dhaheri,https://www.institution.ac.ae/faculty,Inactive,2023-06-05,Normal,Primary,81,2025-11-28
+77,Khalifa University,202501,STU202089156,FR,MBA,1.DR.10001,Omar Singh,Maryam Singh,https://www.institution.ac.ae/research,In Progress,2024-11-04,Default,Default,35,2022-03-18
+84,Dubai Medical College,202501,STU202418487,FR,BS,1.DR.10001,Rashid Al Falasi,Sultan Al Mazrouei,https://www.institution.ac.ae/programs,Inactive,2025-06-14,Standard,Normal,36,2025-05-26
+78,American University of Sharjah,202402,STU202395816,FR,BS,1.DR.10001,Latifa Al Mazrouei,Amna Al Kaabi,https://www.institution.ac.ae/faculty,Active,2022-01-18,Regular,Regular,88,2025-09-24
+75,United Arab Emirates University,202503,STU202079621,FR,CRT,1.DR.10001,Maryam Al Shamsi,Majid Al Junaibi,https://www.institution.ac.ae/programs,Inactive,2023-11-26,Normal,Normal,15,2021-10-24
+84,Dubai Medical College,202401,STU202357288,FR,DIP,1.DR.10001,Omar Al Kaabi,Maitha Singh,https://www.institution.ac.ae/faculty,Inactive,2021-01-02,Regular,Standard,83,2024-06-28
+81,Ajman University,202401,STU202577587,FR,MBA,1.DR.10001,Saeed Al Mehairbi,Khalid Hassan,https://www.institution.ac.ae/research,In Progress,2025-08-05,Standard,Standard,62,2025-01-06
+77,Khalifa University,202401,STU202011676,FR,BA,1.DR.10001,Maryam Al Mehairbi,Ahmed Al Mansoori,https://www.institution.ac.ae/faculty,Inactive,2023-06-15,Primary,Default,55,2024-10-19
+75,United Arab Emirates University,202402,STU202412283,FR,PhD,1.DR.10001,Abdullah Al Dhaheri,Sara Hassan,https://www.institution.ac.ae/programs,Active,2024-03-04,Regular,Standard,26,2024-06-14
+83,British University in Dubai,202502,STU202089264,FR,PhD,1.DR.10001,Abdullah Hassan,Khalid Al Shamsi,https://www.institution.ac.ae/faculty,Pending,2024-05-04,Default,Regular,66,2020-01-07
+81,Ajman University,202402,STU202025164,FR,MS,1.DR.10001,Ahmed Al Mazrouei,Aisha Patel,https://www.institution.ac.ae/research,Completed,2025-09-17,Normal,Standard,14,2022-01-18
+79,University of Sharjah,202502,STU202060565,FR,MBA,1.DR.10001,Majid Al Falasi,Noor Al Zaabi,https://www.institution.ac.ae/faculty,Completed,2021-07-20,Primary,Primary,4,2021-02-20
+83,British University in Dubai,202501,STU202099362,FR,MA,1.DR.10001,Aisha Patel,Aisha Al Dhaheri,https://www.institution.ac.ae/faculty,Active,2023-02-12,Primary,Standard,34,2020-12-23
+82,American University in Dubai,202401,STU202449014,FR,BS,1.DR.10001,Majid Al Zaabi,Noura Al Mazrouei,https://www.institution.ac.ae/research,Completed,2025-01-28,Default,Standard,69,2023-06-20
+78,American University of Sharjah,202501,STU202451667,FR,PhD,1.DR.10001,Khalid Hassan,Noor Al Nuaimi,https://www.institution.ac.ae/research,Active,2021-02-08,Regular,Regular,43,2025-08-31
+78,American University of Sharjah,202501,STU202453527,FR,BA,1.DR.10001,Latifa Al Junaibi,Noor Al Mansoori,https://www.institution.ac.ae/research,Completed,2021-08-24,Regular,Regular,49,2025-02-19
+77,Khalifa University,202503,STU202144125,FR,BA,1.DR.10001,Shamma Al Nuaimi,Ali Ahmed,https://www.institution.ac.ae/programs,Inactive,2023-03-09,Regular,Standard,35,2022-09-11
+79,University of Sharjah,202402,STU202594790,FR,DIP,1.DR.10001,Salem Singh,Maryam Hassan,https://www.institution.ac.ae/faculty,Completed,2021-08-30,Regular,Default,5,2024-12-27
+80,Abu Dhabi University,202403,STU202025749,FR,CRT,1.DR.10001,Omar Patel,Hassan Khan,https://www.institution.ac.ae/research,Active,2023-05-09,Primary,Regular,46,2020-04-28
+82,American University in Dubai,202403,STU202192362,FR,BA,1.DR.10001,Amna Khan,Khalid Hassan,https://www.institution.ac.ae/programs,In Progress,2023-05-03,Primary,Default,88,2023-09-27
+79,University of Sharjah,202503,STU202245064,FR,MBA,1.DR.10001,Abdullah Hassan,Fatima Al Mehairbi,https://www.institution.ac.ae/programs,Inactive,2021-10-09,Standard,Default,9,2021-08-21
+76,Zayed University,202501,STU202531968,FR,BS,1.DR.10001,Omar Khan,Sara Ahmed,https://www.institution.ac.ae/faculty,In Progress,2025-01-01,Default,Default,73,2022-04-25
+76,Zayed University,202503,STU202285562,FR,MS,1.DR.10001,Aisha Al Falasi,Fatima Al Mehairbi,https://www.institution.ac.ae/faculty,Completed,2024-02-19,Regular,Standard,90,2020-12-06
+82,American University in Dubai,202501,STU202198870,FR,PhD,1.DR.10001,Ahmed Singh,Noor Patel,https://www.institution.ac.ae/research,Active,2020-06-05,Default,Normal,53,2023-04-08
+78,American University of Sharjah,202503,STU202178483,FR,BS,1.DR.10001,Hassan Al Shamsi,Latifa Khan,https://www.institution.ac.ae/faculty,Completed,2025-07-27,Primary,Primary,97,2020-01-27
+80,Abu Dhabi University,202502,STU202384762,FR,MA,1.DR.10001,Ali Hassan,Mohammed Singh,https://www.institution.ac.ae/faculty,Active,2025-05-11,Normal,Default,90,2020-11-13
+84,Dubai Medical College,202403,STU202452098,FR,PhD,1.DR.10001,Amna Ahmed,Fatima Khan,https://www.institution.ac.ae/research,In Progress,2021-10-02,Standard,Standard,8,2021-12-29
+81,Ajman University,202403,STU202033983,FR,BA,1.DR.10001,Saeed Al Kaabi,Noura Khan,https://www.institution.ac.ae/research,Pending,2020-06-08,Regular,Standard,91,2020-07-12
+80,Abu Dhabi University,202403,STU202138886,FR,MS,1.DR.10001,Abdullah Al Junaibi,Fatima Ahmed,https://www.institution.ac.ae/faculty,Inactive,2021-08-05,Default,Primary,54,2020-02-15
+83,British University in Dubai,202501,STU202026604,FR,CRT,1.DR.10001,Omar Patel,Shamma Khan,https://www.institution.ac.ae/programs,Inactive,2022-02-05,Primary,Standard,58,2020-01-23
+82,American University in Dubai,202502,STU202589128,FR,MA,1.DR.10001,Ahmed Al Junaibi,Amna Al Mehairbi,https://www.institution.ac.ae/programs,Active,2022-05-18,Normal,Normal,87,2020-01-03
+78,American University of Sharjah,202502,STU202038932,FR,MS,1.DR.10001,Omar Al Kaabi,Fatima Hassan,https://www.institution.ac.ae/research,Active,2020-09-06,Default,Primary,15,2020-10-02
+83,British University in Dubai,202403,STU202123224,FR,MA,1.DR.10001,Sheikha Al Kaabi,Sheikha Khan,https://www.institution.ac.ae/research,Completed,2024-09-12,Regular,Normal,32,2021-12-11
+75,United Arab Emirates University,202403,STU202374456,FR,MS,1.DR.10001,Amna Al Shamsi,Saeed Singh,https://www.institution.ac.ae/programs,Inactive,2024-05-10,Primary,Primary,87,2020-08-25
+77,Khalifa University,202503,STU202282328,FR,CRT,1.DR.10001,Rashid Singh,Ahmed Al Mehairbi,https://www.institution.ac.ae/research,Completed,2025-08-17,Standard,Regular,2,2022-02-15

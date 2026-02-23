@@ -1,0 +1,23 @@
+﻿Pat_Institution_Code,Pat_Institution_Name,Pat_Year,Pat_Status,Pat_Title,Pat_Application_Number,Pat_Date_Issued,Pat_Number,Pat_Office,Pat_Designation_Country,Pat_Inventor_IDs,Pat_Inventor_ORCID_IDs,Pat_Applicants_Owners
+75,United Arab Emirates University,2025,Inactive,Advanced Biology,True,2024-11-09,True,True,170,True,9837-8746-4968-1624,156
+78,American University of Sharjah,2025,Completed,Applied Mathematics,True,2024-10-22,True,True,423,True,4678-7505-1070-4964,286
+81,Ajman University,2024,In Progress,Applied Finance,True,2024-12-31,True,True,148,True,5322-6302-8542-6195,456
+76,Zayed University,2024,In Progress,Applied Pharmacy,True,2023-01-20,True,True,77,True,9052-5206-1811-4821,181
+82,American University in Dubai,2024,Inactive,Principles of Islamic Studies,True,2021-06-24,True,True,62,True,5602-9605-2113-5752,208
+84,Dubai Medical College,2025,Inactive,Advanced Law,True,2025-11-26,True,True,129,True,8999-8273-3188-2801,236
+75,United Arab Emirates University,2025,Inactive,Applied Arabic Studies,True,2025-12-26,True,True,337,True,4969-1152-3256-1994,45
+75,United Arab Emirates University,2024,Pending,Advanced Electrical Engineering,True,2020-01-07,True,True,331,True,1475-4078-2281-6946,328
+76,Zayed University,2025,Inactive,Introduction to Sociology,True,2025-05-28,True,True,176,True,2079-9116-6269-1653,92
+75,United Arab Emirates University,2024,In Progress,Introduction to Computer Science,True,2021-01-11,True,True,415,True,1541-3049-5958-9433,126
+79,University of Sharjah,2025,Completed,Principles of Electrical Engineering,True,2021-09-16,True,True,407,True,2071-2459-3083-7514,74
+79,University of Sharjah,2025,Completed,Principles of Economics,True,2024-09-08,True,True,492,True,9223-7789-4415-8814,76
+80,Abu Dhabi University,2024,In Progress,Advanced Pharmacy,True,2020-11-09,True,True,56,True,6513-6089-4045-2951,172
+77,Khalifa University,2024,Pending,Advanced Islamic Studies,True,2022-01-19,True,True,292,True,3165-9414-5485-8889,451
+76,Zayed University,2024,Active,Applied Arabic Studies,True,2024-12-03,True,True,335,True,6456-2135-8374-5593,223
+82,American University in Dubai,2024,In Progress,Introduction to Finance,True,2022-12-02,True,True,278,True,1022-7356-2589-4945,485
+75,United Arab Emirates University,2025,Pending,Principles of Finance,True,2021-06-14,True,True,361,True,9097-8402-7982-5798,453
+76,Zayed University,2024,In Progress,Applied Sociology,True,2022-04-18,True,True,84,True,6286-1816-4816-3724,260
+78,American University of Sharjah,2024,In Progress,Principles of Marketing,True,2021-10-21,True,True,435,True,2764-6550-4720-5599,220
+77,Khalifa University,2024,Active,Advanced English Literature,True,2021-10-24,True,True,414,True,1099-6199-7844-6800,310
+79,University of Sharjah,2024,Completed,Introduction to Law,True,2020-01-07,True,True,298,True,2510-9897-9374-3313,320
+78,American University of Sharjah,2025,In Progress,Introduction to Chemistry,True,2022-11-22,True,True,151,True,5782-5470-7251-7785,221
