@@ -2982,13 +2982,52 @@ def display_data_explorer():
                 st.write(f"**{dtype}:** {count}")
 
 def main():
-    # Header
-    st.markdown('<h1 style="text-align: center;">🎓 CHEDS Analytics Dashboard</h1>', unsafe_allow_html=True)
-    st.markdown('<p style="text-align: center; color: #94a3b8;">UAE Higher Education Data Analytics</p>', unsafe_allow_html=True)
+    # Display Exalio Logo at top of page
+    logo_path = Path(__file__).parent / "exalio-logo.svg"
+
+    # Add CSS to make logo white and improve visibility
+    st.markdown("""
+    <style>
+        img[data-testid="stImage"] {
+            filter: brightness(0) invert(1) !important;
+        }
+    </style>
+    """, unsafe_allow_html=True)
+
+    try:
+        col_logo, col_title = st.columns([1.2, 3.8])
+        with col_logo:
+            if logo_path.exists():
+                st.image(str(logo_path), width=250)
+        with col_title:
+            st.markdown("""
+            <div style='padding-top: 20px;'>
+                <h1 style='margin-bottom: 5px;'>🎓 CHEDS Analytics Dashboard</h1>
+                <p style='color: #94a3b8; font-size: 0.95rem; margin-top: 5px;'>
+                    <span style='color: #818cf8;'>UAE Higher Education Data Analytics</span>
+                </p>
+                <p style='color: #94a3b8; font-size: 1.1rem; margin-top: 10px;'>
+                    <strong>Powered by Exalio</strong> | Transform Education Data into Strategic Intelligence
+                </p>
+            </div>
+            """, unsafe_allow_html=True)
+    except Exception as e:
+        # Fallback if logo can't be loaded
+        st.markdown('<h1 style="text-align: center;">🎓 CHEDS Analytics Dashboard</h1>', unsafe_allow_html=True)
+        st.markdown('<p style="text-align: center; color: #94a3b8;">UAE Higher Education Data Analytics</p>', unsafe_allow_html=True)
+        st.markdown('<p style="text-align: center; color: #94a3b8;"><strong>Powered by Exalio</strong></p>', unsafe_allow_html=True)
+
     st.markdown("---")
 
     # Sidebar
     with st.sidebar:
+        # Display logo at top of sidebar
+        try:
+            if logo_path.exists():
+                st.image(str(logo_path), width=220)
+        except:
+            pass  # Silently skip if logo not found
+
         st.title("⚙️ Dashboard Controls")
 
         st.markdown("### 📂 Load Data")
