@@ -230,6 +230,31 @@ PRODUCT_CATEGORIES = {
     ]
 }
 
+# Helper function to apply consistent white theme to all charts
+def apply_chart_theme(fig, **kwargs):
+    """Apply consistent white text theme to Plotly charts for better visibility"""
+    default_layout = {
+        'plot_bgcolor': 'rgba(0,0,0,0)',
+        'paper_bgcolor': 'rgba(0,0,0,0)',
+        'font': dict(color='white', size=12),
+        'title_font': dict(color='white', size=18, family='Inter, sans-serif'),
+        'legend': dict(font=dict(color='white', size=12)),
+        'xaxis': dict(
+            gridcolor='rgba(255,255,255,0.1)',
+            title_font=dict(color='white', size=13),
+            tickfont=dict(color='white')
+        ),
+        'yaxis': dict(
+            gridcolor='rgba(255,255,255,0.1)',
+            title_font=dict(color='white', size=13),
+            tickfont=dict(color='white')
+        )
+    }
+    # Merge with any custom kwargs
+    default_layout.update(kwargs)
+    fig.update_layout(**default_layout)
+    return fig
+
 def auto_load_csv_files(show_progress=True):
     """Automatically load all CSV files from csv_files directory"""
     csv_dir = Path("csv_files")
@@ -289,11 +314,7 @@ def create_chart(df, chart_type, x_col, y_col, title, color_col=None):
     else:
         fig = px.bar(df, x=x_col, y=y_col, title=title)
 
-    fig.update_layout(
-        plot_bgcolor='rgba(0,0,0,0)',
-        paper_bgcolor='rgba(0,0,0,0)',
-        font=dict(color='#e2e8f0'),
-        xaxis=dict(tickangle=-45)
+    apply_chart_theme(fig,xaxis=dict(tickangle=-45)
     )
     return fig
 
@@ -353,11 +374,7 @@ def display_overview():
                      color='Products', color_continuous_scale='Viridis',
                      text='Products')
         fig.update_traces(textposition='outside')
-        fig.update_layout(
-            plot_bgcolor='rgba(0,0,0,0)',
-            paper_bgcolor='rgba(0,0,0,0)',
-            font=dict(color='#e2e8f0'),
-            xaxis=dict(tickangle=-45),
+        apply_chart_theme(fig,xaxis=dict(tickangle=-45),
             height=400
         )
         st.plotly_chart(fig, use_container_width=True)
@@ -367,12 +384,7 @@ def display_overview():
                      title='📊 Records Distribution by Domain',
                      hole=0.4)
         fig.update_traces(textposition='inside', textinfo='percent+label')
-        fig.update_layout(
-            plot_bgcolor='rgba(0,0,0,0)',
-            paper_bgcolor='rgba(0,0,0,0)',
-            font=dict(color='#e2e8f0'),
-            height=400
-        )
+        apply_chart_theme(fig,height=400)
         st.plotly_chart(fig, use_container_width=True)
 
     # Row 2: Coverage and Comparison
@@ -392,15 +404,7 @@ def display_overview():
             y=domain_df['Total Products'],
             marker_color='#94a3b8'
         ))
-        fig.update_layout(
-            title='📈 Data Coverage by Domain',
-            barmode='group',
-            plot_bgcolor='rgba(0,0,0,0)',
-            paper_bgcolor='rgba(0,0,0,0)',
-            font=dict(color='#e2e8f0'),
-            xaxis=dict(tickangle=-45),
-            height=400
-        )
+        apply_chart_theme(fig, title='📈 Data Coverage by Domain', barmode='group', xaxis=dict(tickangle=-45), height=400)
         st.plotly_chart(fig, use_container_width=True)
 
     with col2:
@@ -408,11 +412,7 @@ def display_overview():
                      color='Coverage %', color_continuous_scale='RdYlGn',
                      range_color=[0, 100], text='Coverage %')
         fig.update_traces(texttemplate='%{text:.0f}%', textposition='outside')
-        fig.update_layout(
-            plot_bgcolor='rgba(0,0,0,0)',
-            paper_bgcolor='rgba(0,0,0,0)',
-            font=dict(color='#e2e8f0'),
-            xaxis=dict(tickangle=-45),
+        apply_chart_theme(fig,xaxis=dict(tickangle=-45),
             height=400
         )
         st.plotly_chart(fig, use_container_width=True)
@@ -448,7 +448,7 @@ def display_overview():
                         st.write(f"💾 {(ds['rows'] * ds['columns']):,} cells")
 
 def display_learning_teaching():
-    """Display enriched Learning and Teaching analytics"""
+    """Display enriched Learning and Teaching analytics with drill-down"""
     st.title("📚 Learning and Teaching Analytics")
     st.markdown("**Comprehensive analysis of student lifecycle: applications, enrollment, progression, and graduation**")
 
@@ -456,6 +456,53 @@ def display_learning_teaching():
     if not available:
         st.warning("⚠️ No Learning & Teaching data available. Please load CSV files from the sidebar.")
         return
+
+    # 🔍 Drill-Down Filters
+    st.sidebar.markdown("---")
+    st.sidebar.subheader("🔍 Learning & Teaching Filters")
+
+    # Get all unique institutions across datasets
+    all_institutions = set()
+    if 'CHEDS-LT-01' in available and 'App_Institution_Name' in available['CHEDS-LT-01']['data'].columns:
+        all_institutions.update(available['CHEDS-LT-01']['data']['App_Institution_Name'].unique())
+    if 'CHEDS-LT-03' in available:
+        inst_col = 'Enroll_Institution_Name' if 'Enroll_Institution_Name' in available['CHEDS-LT-03']['data'].columns else 'Stu_Institution_Name'
+        if inst_col in available['CHEDS-LT-03']['data'].columns:
+            all_institutions.update(available['CHEDS-LT-03']['data'][inst_col].unique())
+
+    all_institutions = sorted([i for i in all_institutions if pd.notna(i)])
+
+    selected_institution = st.sidebar.selectbox(
+        "🏛️ Select Institution",
+        ["All Institutions"] + all_institutions,
+        key="lt_institution_filter"
+    )
+
+    # Degree Level Filter
+    all_degrees = set()
+    if 'CHEDS-LT-01' in available and 'App_Degrees' in available['CHEDS-LT-01']['data'].columns:
+        all_degrees.update(available['CHEDS-LT-01']['data']['App_Degrees'].unique())
+    if 'CHEDS-LT-03' in available:
+        degree_col = 'Enroll_Student_Degree' if 'Enroll_Student_Degree' in available['CHEDS-LT-03']['data'].columns else 'Stu_Degree'
+        if degree_col in available['CHEDS-LT-03']['data'].columns:
+            all_degrees.update(available['CHEDS-LT-03']['data'][degree_col].unique())
+
+    all_degrees = sorted([d for d in all_degrees if pd.notna(d)])
+
+    selected_degree = st.sidebar.selectbox(
+        "🎓 Select Degree Level",
+        ["All Degrees"] + all_degrees,
+        key="lt_degree_filter"
+    )
+
+    # Gender Filter
+    selected_gender = st.sidebar.selectbox(
+        "👥 Select Gender",
+        ["All", "M", "F"],
+        key="lt_gender_filter"
+    )
+
+    st.sidebar.markdown("*Filters apply to all charts below*")
 
     # Enhanced Key metrics
     st.subheader("📊 Key Performance Indicators")
@@ -468,31 +515,75 @@ def display_learning_teaching():
     total_programs = 0
 
     if 'CHEDS-LT-01' in available:
-        df = available['CHEDS-LT-01']['data']
+        df = available['CHEDS-LT-01']['data'].copy()
+
+        # Apply filters
+        if selected_institution != "All Institutions" and 'App_Institution_Name' in df.columns:
+            df = df[df['App_Institution_Name'] == selected_institution]
+        if selected_degree != "All Degrees" and 'App_Degrees' in df.columns:
+            df = df[df['App_Degrees'] == selected_degree]
+        if selected_gender != "All" and 'App_Gender' in df.columns:
+            df = df[df['App_Gender'] == selected_gender]
+
         total_applicants = df['App_Applicants'].sum() if 'App_Applicants' in df.columns else len(df)
         with cols[0]:
             st.metric("📝 Total Applicants", f"{int(total_applicants):,}")
 
     if 'CHEDS-LT-03' in available:
-        df = available['CHEDS-LT-03']['data']
+        df = available['CHEDS-LT-03']['data'].copy()
+
+        # Apply filters
+        inst_col = 'Enroll_Institution_Name' if 'Enroll_Institution_Name' in df.columns else 'Stu_Institution_Name'
+        if selected_institution != "All Institutions" and inst_col in df.columns:
+            df = df[df[inst_col] == selected_institution]
+
+        degree_col = 'Enroll_Student_Degree' if 'Enroll_Student_Degree' in df.columns else 'Stu_Degree'
+        if selected_degree != "All Degrees" and degree_col in df.columns:
+            df = df[df[degree_col] == selected_degree]
+
+        gender_col = 'Enroll_Gender' if 'Enroll_Gender' in df.columns else 'Stu_Gender'
+        if selected_gender != "All" and gender_col in df.columns:
+            df = df[df[gender_col] == selected_gender]
+
         total_enrolled = len(df)
         with cols[1]:
             st.metric("👨‍🎓 Enrolled Students", f"{total_enrolled:,}")
 
     if 'CHEDS-LT-09' in available:
-        df = available['CHEDS-LT-09']['data']
+        df = available['CHEDS-LT-09']['data'].copy()
+
+        # Apply filters for graduates
+        if selected_institution != "All Institutions" and 'Grad_Institution_Name' in df.columns:
+            df = df[df['Grad_Institution_Name'] == selected_institution]
+        if selected_degree != "All Degrees" and 'Grad_Degree' in df.columns:
+            df = df[df['Grad_Degree'] == selected_degree]
+        if selected_gender != "All" and 'Grad_Gender' in df.columns:
+            df = df[df['Grad_Gender'] == selected_gender]
+
         total_graduates = len(df)
         with cols[2]:
             st.metric("🎓 Graduates", f"{total_graduates:,}")
 
     if 'CHEDS-LT-11' in available:
-        df = available['CHEDS-LT-11']['data']
+        df = available['CHEDS-LT-11']['data'].copy()
+
+        # Apply filters for courses
+        if selected_institution != "All Institutions" and 'Course_Institution_Name' in df.columns:
+            df = df[df['Course_Institution_Name'] == selected_institution]
+
         total_courses = len(df)
         with cols[3]:
             st.metric("📚 Total Courses", f"{total_courses:,}")
 
     if 'CHEDS-LT-12' in available:
-        df = available['CHEDS-LT-12']['data']
+        df = available['CHEDS-LT-12']['data'].copy()
+
+        # Apply filters for programs
+        if selected_institution != "All Institutions" and 'Prog_Institution_Name' in df.columns:
+            df = df[df['Prog_Institution_Name'] == selected_institution]
+        if selected_degree != "All Degrees" and 'Prog_Degrees' in df.columns:
+            df = df[df['Prog_Degrees'] == selected_degree]
+
         total_programs = len(df)
         with cols[4]:
             st.metric("🎯 Programs", f"{total_programs:,}")
@@ -517,7 +608,15 @@ def display_learning_teaching():
     # Applicants Analysis
     if 'CHEDS-LT-01' in available:
         st.subheader("📝 Applicants Analysis")
-        df = available['CHEDS-LT-01']['data']
+        df = available['CHEDS-LT-01']['data'].copy()
+
+        # Apply filters
+        if selected_institution != "All Institutions" and 'App_Institution_Name' in df.columns:
+            df = df[df['App_Institution_Name'] == selected_institution]
+        if selected_degree != "All Degrees" and 'App_Degrees' in df.columns:
+            df = df[df['App_Degrees'] == selected_degree]
+        if selected_gender != "All" and 'App_Gender' in df.columns:
+            df = df[df['App_Gender'] == selected_gender]
 
         col1, col2 = st.columns(2)
 
@@ -530,13 +629,7 @@ def display_learning_teaching():
                             orientation='h', color='App_Applicants',
                             color_continuous_scale='Blues', text='App_Applicants')
                 fig.update_traces(texttemplate='%{text:,}', textposition='outside')
-                fig.update_layout(
-                    plot_bgcolor='rgba(0,0,0,0)',
-                    paper_bgcolor='rgba(0,0,0,0)',
-                    font=dict(color='#e2e8f0'),
-                    height=400,
-                    yaxis={'categoryorder': 'total ascending'}
-                )
+                apply_chart_theme(fig, height=400, yaxis={'categoryorder': 'total ascending'})
                 st.plotly_chart(fig, use_container_width=True)
 
         with col2:
@@ -546,12 +639,7 @@ def display_learning_teaching():
                             title='🎓 Applications by Degree Level',
                             hole=0.4, color_discrete_sequence=px.colors.sequential.Viridis)
                 fig.update_traces(textposition='inside', textinfo='percent+label')
-                fig.update_layout(
-                    plot_bgcolor='rgba(0,0,0,0)',
-                    paper_bgcolor='rgba(0,0,0,0)',
-                    font=dict(color='#e2e8f0'),
-                    height=400
-                )
+                apply_chart_theme(fig, height=400)
                 st.plotly_chart(fig, use_container_width=True)
 
         # Additional applicant insights
@@ -563,12 +651,7 @@ def display_learning_teaching():
                             title='👥 Applicants by Gender',
                             color_discrete_map={'M': '#6366f1', 'F': '#ec4899'})
                 fig.update_traces(textposition='inside', textinfo='percent+value')
-                fig.update_layout(
-                    plot_bgcolor='rgba(0,0,0,0)',
-                    paper_bgcolor='rgba(0,0,0,0)',
-                    font=dict(color='#e2e8f0'),
-                    height=350
-                )
+                apply_chart_theme(fig, height=350)
                 st.plotly_chart(fig, use_container_width=True)
 
         with col2:
@@ -578,13 +661,7 @@ def display_learning_teaching():
                 fig = px.bar(nat_data, x='App_Nationality', y='App_Applicants',
                             title='🌍 Top 10 Nationalities (Applicants)',
                             color='App_Applicants', color_continuous_scale='Teal')
-                fig.update_layout(
-                    plot_bgcolor='rgba(0,0,0,0)',
-                    paper_bgcolor='rgba(0,0,0,0)',
-                    font=dict(color='#e2e8f0'),
-                    xaxis=dict(tickangle=-45),
-                    height=350
-                )
+                apply_chart_theme(fig, xaxis=dict(tickangle=-45), height=350)
                 st.plotly_chart(fig, use_container_width=True)
 
     st.markdown("---")
@@ -592,7 +669,20 @@ def display_learning_teaching():
     # Student Enrollment Analysis
     if 'CHEDS-LT-03' in available:
         st.subheader("👨‍🎓 Student Enrollment Analysis")
-        df = available['CHEDS-LT-03']['data']
+        df = available['CHEDS-LT-03']['data'].copy()
+
+        # Apply filters
+        inst_col = 'Enroll_Institution_Name' if 'Enroll_Institution_Name' in df.columns else 'Stu_Institution_Name'
+        if selected_institution != "All Institutions" and inst_col in df.columns:
+            df = df[df[inst_col] == selected_institution]
+
+        degree_col = 'Enroll_Student_Degree' if 'Enroll_Student_Degree' in df.columns else 'Stu_Degree'
+        if selected_degree != "All Degrees" and degree_col in df.columns:
+            df = df[df[degree_col] == selected_degree]
+
+        gender_col = 'Enroll_Gender' if 'Enroll_Gender' in df.columns else 'Stu_Gender'
+        if selected_gender != "All" and gender_col in df.columns:
+            df = df[df[gender_col] == selected_gender]
 
         col1, col2 = st.columns(2)
 
@@ -606,12 +696,7 @@ def display_learning_teaching():
                             hole=0.5, color_discrete_map={'M': '#6366f1', 'F': '#ec4899'})
                 fig.update_traces(textposition='inside', textinfo='percent+label+value',
                                 texttemplate='%{label}<br>%{value:,}<br>(%{percent})')
-                fig.update_layout(
-                    plot_bgcolor='rgba(0,0,0,0)',
-                    paper_bgcolor='rgba(0,0,0,0)',
-                    font=dict(color='#e2e8f0'),
-                    height=400
-                )
+                apply_chart_theme(fig, height=400)
                 st.plotly_chart(fig, use_container_width=True)
 
         with col2:
@@ -623,13 +708,7 @@ def display_learning_teaching():
                             title='🌍 Top 10 Nationalities (Enrolled)',
                             orientation='h', color=nat_counts.values,
                             color_continuous_scale='Viridis', labels={'x': 'Students', 'y': 'Nationality'})
-                fig.update_layout(
-                    plot_bgcolor='rgba(0,0,0,0)',
-                    paper_bgcolor='rgba(0,0,0,0)',
-                    font=dict(color='#e2e8f0'),
-                    height=400,
-                    yaxis={'categoryorder': 'total ascending'}
-                )
+                apply_chart_theme(fig, height=400, yaxis={'categoryorder': 'total ascending'})
                 st.plotly_chart(fig, use_container_width=True)
 
         # Additional enrollment metrics
@@ -643,13 +722,7 @@ def display_learning_teaching():
                             title='🏛️ Enrollment by Institution (Top 10)',
                             color=inst_counts.values, color_continuous_scale='Blues',
                             labels={'x': 'Institution', 'y': 'Enrolled Students'})
-                fig.update_layout(
-                    plot_bgcolor='rgba(0,0,0,0)',
-                    paper_bgcolor='rgba(0,0,0,0)',
-                    font=dict(color='#e2e8f0'),
-                    xaxis=dict(tickangle=-45),
-                    height=350
-                )
+                apply_chart_theme(fig, xaxis=dict(tickangle=-45), height=350)
                 st.plotly_chart(fig, use_container_width=True)
 
         with col2:
@@ -661,12 +734,7 @@ def display_learning_teaching():
                             title='🎓 Enrollment by Degree Level',
                             color_discrete_sequence=px.colors.sequential.Plasma)
                 fig.update_traces(textposition='inside', textinfo='percent+label')
-                fig.update_layout(
-                    plot_bgcolor='rgba(0,0,0,0)',
-                    paper_bgcolor='rgba(0,0,0,0)',
-                    font=dict(color='#e2e8f0'),
-                    height=350
-                )
+                apply_chart_theme(fig, height=350)
                 st.plotly_chart(fig, use_container_width=True)
 
         # Additional enrollment visualizations
@@ -678,13 +746,7 @@ def display_learning_teaching():
                 fig = px.bar(x=type_counts.index, y=type_counts.values,
                             title='📋 Student Type Distribution',
                             color=type_counts.values, color_continuous_scale='Teal')
-                fig.update_layout(
-                    plot_bgcolor='rgba(0,0,0,0)',
-                    paper_bgcolor='rgba(0,0,0,0)',
-                    font=dict(color='#e2e8f0'),
-                    xaxis=dict(tickangle=-45),
-                    height=350
-                )
+                apply_chart_theme(fig, xaxis=dict(tickangle=-45), height=350)
                 st.plotly_chart(fig, use_container_width=True)
 
         with col2:
@@ -695,12 +757,7 @@ def display_learning_teaching():
                             title='🎯 Mode of Study',
                             color_discrete_sequence=px.colors.sequential.Greens)
                 fig.update_traces(textposition='inside', textinfo='percent+label')
-                fig.update_layout(
-                    plot_bgcolor='rgba(0,0,0,0)',
-                    paper_bgcolor='rgba(0,0,0,0)',
-                    font=dict(color='#e2e8f0'),
-                    height=350
-                )
+                apply_chart_theme(fig, height=350)
                 st.plotly_chart(fig, use_container_width=True)
 
     st.markdown("---")
@@ -720,13 +777,7 @@ def display_learning_teaching():
                             title='🏆 Graduates by Institution (Top 10)',
                             orientation='h', color=inst_grad.values,
                             color_continuous_scale='Greens')
-                fig.update_layout(
-                    plot_bgcolor='rgba(0,0,0,0)',
-                    paper_bgcolor='rgba(0,0,0,0)',
-                    font=dict(color='#e2e8f0'),
-                    height=400,
-                    yaxis={'categoryorder': 'total ascending'}
-                )
+                apply_chart_theme(fig, height=400, yaxis={'categoryorder': 'total ascending'})
                 st.plotly_chart(fig, use_container_width=True)
 
         with col2:
@@ -738,12 +789,7 @@ def display_learning_teaching():
                             title='📜 Graduates by Degree Level',
                             hole=0.4, color_discrete_sequence=px.colors.sequential.Greens)
                 fig.update_traces(textposition='inside', textinfo='percent+label+value')
-                fig.update_layout(
-                    plot_bgcolor='rgba(0,0,0,0)',
-                    paper_bgcolor='rgba(0,0,0,0)',
-                    font=dict(color='#e2e8f0'),
-                    height=400
-                )
+                apply_chart_theme(fig, height=400)
                 st.plotly_chart(fig, use_container_width=True)
 
         # Additional graduate visualizations
@@ -756,12 +802,7 @@ def display_learning_teaching():
                             title='👥 Graduates by Gender',
                             color_discrete_map={'M': '#6366f1', 'F': '#ec4899'})
                 fig.update_traces(textposition='inside', textinfo='percent+label+value')
-                fig.update_layout(
-                    plot_bgcolor='rgba(0,0,0,0)',
-                    paper_bgcolor='rgba(0,0,0,0)',
-                    font=dict(color='#e2e8f0'),
-                    height=400
-                )
+                apply_chart_theme(fig, height=400)
                 st.plotly_chart(fig, use_container_width=True)
 
         with col2:
@@ -771,11 +812,7 @@ def display_learning_teaching():
                 fig = px.bar(x=nat_grad.index, y=nat_grad.values,
                             title='🌍 Top 10 Nationalities (Graduates)',
                             color=nat_grad.values, color_continuous_scale='Teal')
-                fig.update_layout(
-                    plot_bgcolor='rgba(0,0,0,0)',
-                    paper_bgcolor='rgba(0,0,0,0)',
-                    font=dict(color='#e2e8f0'),
-                    xaxis=dict(tickangle=-45),
+                apply_chart_theme(fig,xaxis=dict(tickangle=-45),
                     height=400
                 )
                 st.plotly_chart(fig, use_container_width=True)
@@ -788,14 +825,9 @@ def display_learning_teaching():
                 fig = px.histogram(df, x='Grad_GPA_Cumulative', nbins=20,
                                   title='📊 GPA Distribution',
                                   color_discrete_sequence=['#10b981'])
-                fig.update_layout(
-                    plot_bgcolor='rgba(0,0,0,0)',
-                    paper_bgcolor='rgba(0,0,0,0)',
-                    font=dict(color='#e2e8f0'),
-                    xaxis_title='Cumulative GPA',
+                apply_chart_theme(fig,xaxis_title='Cumulative GPA',
                     yaxis_title='Number of Graduates',
-                    height=400
-                )
+                    height=400)
                 st.plotly_chart(fig, use_container_width=True)
 
         with col2:
@@ -804,14 +836,62 @@ def display_learning_teaching():
                 fig = px.box(df, y='Grad_GPA_Cumulative',
                             title='📦 GPA Statistics',
                             color_discrete_sequence=['#6366f1'])
-                fig.update_layout(
-                    plot_bgcolor='rgba(0,0,0,0)',
-                    paper_bgcolor='rgba(0,0,0,0)',
-                    font=dict(color='#e2e8f0'),
-                    yaxis_title='Cumulative GPA',
-                    height=400
-                )
+                apply_chart_theme(fig,yaxis_title='Cumulative GPA',
+                    height=400)
                 st.plotly_chart(fig, use_container_width=True)
+
+    # 🔍 Detailed Data View
+    st.markdown("---")
+    st.subheader("🔍 Detailed Data View")
+    st.markdown("**Explore filtered records in detail**")
+
+    # Add expandable sections for each dataset
+    if 'CHEDS-LT-01' in available:
+        df = available['CHEDS-LT-01']['data'].copy()
+
+        # Apply filters
+        if selected_institution != "All Institutions" and 'App_Institution_Name' in df.columns:
+            df = df[df['App_Institution_Name'] == selected_institution]
+        if selected_degree != "All Degrees" and 'App_Degrees' in df.columns:
+            df = df[df['App_Degrees'] == selected_degree]
+        if selected_gender != "All" and 'App_Gender' in df.columns:
+            df = df[df['App_Gender'] == selected_gender]
+
+        with st.expander(f"📝 Applicants Data ({len(df):,} records)"):
+            st.dataframe(df, use_container_width=True, height=400)
+
+    if 'CHEDS-LT-03' in available:
+        df = available['CHEDS-LT-03']['data'].copy()
+
+        # Apply filters
+        inst_col = 'Enroll_Institution_Name' if 'Enroll_Institution_Name' in df.columns else 'Stu_Institution_Name'
+        if selected_institution != "All Institutions" and inst_col in df.columns:
+            df = df[df[inst_col] == selected_institution]
+
+        degree_col = 'Enroll_Student_Degree' if 'Enroll_Student_Degree' in df.columns else 'Stu_Degree'
+        if selected_degree != "All Degrees" and degree_col in df.columns:
+            df = df[df[degree_col] == selected_degree]
+
+        gender_col = 'Enroll_Gender' if 'Enroll_Gender' in df.columns else 'Stu_Gender'
+        if selected_gender != "All" and gender_col in df.columns:
+            df = df[df[gender_col] == selected_gender]
+
+        with st.expander(f"👨‍🎓 Enrolled Students Data ({len(df):,} records)"):
+            st.dataframe(df, use_container_width=True, height=400)
+
+    if 'CHEDS-LT-09' in available:
+        df = available['CHEDS-LT-09']['data'].copy()
+
+        # Apply filters
+        if selected_institution != "All Institutions" and 'Grad_Institution_Name' in df.columns:
+            df = df[df['Grad_Institution_Name'] == selected_institution]
+        if selected_degree != "All Degrees" and 'Grad_Degree' in df.columns:
+            df = df[df['Grad_Degree'] == selected_degree]
+        if selected_gender != "All" and 'Grad_Gender' in df.columns:
+            df = df[df['Grad_Gender'] == selected_gender]
+
+        with st.expander(f"🎓 Graduates Data ({len(df):,} records)"):
+            st.dataframe(df, use_container_width=True, height=400)
 
 def display_human_resources():
     """Display enriched HR analytics"""
@@ -859,12 +939,7 @@ def display_human_resources():
                             hole=0.5, color_discrete_map={'M': '#6366f1', 'F': '#ec4899'})
                 fig.update_traces(textposition='inside', textinfo='percent+label+value',
                                 texttemplate='%{label}<br>%{value:,}<br>(%{percent})')
-                fig.update_layout(
-                    plot_bgcolor='rgba(0,0,0,0)',
-                    paper_bgcolor='rgba(0,0,0,0)',
-                    font=dict(color='#e2e8f0'),
-                    height=400
-                )
+                apply_chart_theme(fig, height=400)
                 st.plotly_chart(fig, use_container_width=True)
 
         with col2:
@@ -874,13 +949,7 @@ def display_human_resources():
                             title='🌍 Top 10 Nationalities',
                             orientation='h', color=nat_counts.values,
                             color_continuous_scale='Viridis')
-                fig.update_layout(
-                    plot_bgcolor='rgba(0,0,0,0)',
-                    paper_bgcolor='rgba(0,0,0,0)',
-                    font=dict(color='#e2e8f0'),
-                    height=400,
-                    yaxis={'categoryorder': 'total ascending'}
-                )
+                apply_chart_theme(fig, height=400, yaxis={'categoryorder': 'total ascending'})
                 st.plotly_chart(fig, use_container_width=True)
 
         # Visualizations Row 2
@@ -892,11 +961,7 @@ def display_human_resources():
                 fig = px.bar(x=inst_counts.index, y=inst_counts.values,
                             title='🏛️ Employees by Institution (Top 10)',
                             color=inst_counts.values, color_continuous_scale='Blues')
-                fig.update_layout(
-                    plot_bgcolor='rgba(0,0,0,0)',
-                    paper_bgcolor='rgba(0,0,0,0)',
-                    font=dict(color='#e2e8f0'),
-                    xaxis=dict(tickangle=-45),
+                apply_chart_theme(fig,xaxis=dict(tickangle=-45),
                     height=400
                 )
                 st.plotly_chart(fig, use_container_width=True)
@@ -908,12 +973,7 @@ def display_human_resources():
                             title='💼 Top 10 Positions',
                             color_discrete_sequence=px.colors.sequential.Plasma)
                 fig.update_traces(textposition='inside', textinfo='percent+label')
-                fig.update_layout(
-                    plot_bgcolor='rgba(0,0,0,0)',
-                    paper_bgcolor='rgba(0,0,0,0)',
-                    font=dict(color='#e2e8f0'),
-                    height=400
-                )
+                apply_chart_theme(fig, height=400)
                 st.plotly_chart(fig, use_container_width=True)
 
     # Program Learning Outcomes Analysis (HR-23)
@@ -938,13 +998,8 @@ def display_human_resources():
                         title='🏛️ PLOs by Institution (Top 10)',
                         orientation='h', color=inst_plo.values,
                         color_continuous_scale='Teal')
-            fig.update_layout(
-                plot_bgcolor='rgba(0,0,0,0)',
-                paper_bgcolor='rgba(0,0,0,0)',
-                font=dict(color='#e2e8f0'),
-                height=400,
-                yaxis={'categoryorder': 'total ascending'}
-            )
+            apply_chart_theme(fig,height=400,
+                yaxis={'categoryorder': 'total ascending'})
             st.plotly_chart(fig, use_container_width=True)
 
         with col2:
@@ -953,11 +1008,7 @@ def display_human_resources():
             fig = px.bar(x=prog_inst.index, y=prog_inst.values,
                         title='📚 Programs by Institution (Top 10)',
                         color=prog_inst.values, color_continuous_scale='Blues')
-            fig.update_layout(
-                plot_bgcolor='rgba(0,0,0,0)',
-                paper_bgcolor='rgba(0,0,0,0)',
-                font=dict(color='#e2e8f0'),
-                xaxis=dict(tickangle=-45),
+            apply_chart_theme(fig,xaxis=dict(tickangle=-45),
                 height=400
             )
             st.plotly_chart(fig, use_container_width=True)
@@ -994,13 +1045,7 @@ def display_human_resources():
                             title='🏛️ Workload Records by Institution (Top 10)',
                             orientation='h', color=inst_wload.values,
                             color_continuous_scale='Greens')
-                fig.update_layout(
-                    plot_bgcolor='rgba(0,0,0,0)',
-                    paper_bgcolor='rgba(0,0,0,0)',
-                    font=dict(color='#e2e8f0'),
-                    height=400,
-                    yaxis={'categoryorder': 'total ascending'}
-                )
+                apply_chart_theme(fig, height=400, yaxis={'categoryorder': 'total ascending'})
                 st.plotly_chart(fig, use_container_width=True)
 
         with col2:
@@ -1011,12 +1056,7 @@ def display_human_resources():
                             title='📅 Workload by Academic Period',
                             color_discrete_sequence=px.colors.sequential.Plasma)
                 fig.update_traces(textposition='inside', textinfo='percent+label')
-                fig.update_layout(
-                    plot_bgcolor='rgba(0,0,0,0)',
-                    paper_bgcolor='rgba(0,0,0,0)',
-                    font=dict(color='#e2e8f0'),
-                    height=400
-                )
+                apply_chart_theme(fig, height=400)
                 st.plotly_chart(fig, use_container_width=True)
 
         # Additional workload visualizations
@@ -1028,11 +1068,7 @@ def display_human_resources():
                 fig = px.bar(x=cat_dist.index, y=cat_dist.values,
                             title='👔 Employee Category Distribution',
                             color=cat_dist.values, color_continuous_scale='Blues')
-                fig.update_layout(
-                    plot_bgcolor='rgba(0,0,0,0)',
-                    paper_bgcolor='rgba(0,0,0,0)',
-                    font=dict(color='#e2e8f0'),
-                    xaxis=dict(tickangle=-45),
+                apply_chart_theme(fig,xaxis=dict(tickangle=-45),
                     height=400
                 )
                 st.plotly_chart(fig, use_container_width=True)
@@ -1045,12 +1081,7 @@ def display_human_resources():
                             title='⏰ Full-Time vs Part-Time',
                             color_discrete_sequence=px.colors.sequential.Teal)
                 fig.update_traces(textposition='inside', textinfo='percent+label+value')
-                fig.update_layout(
-                    plot_bgcolor='rgba(0,0,0,0)',
-                    paper_bgcolor='rgba(0,0,0,0)',
-                    font=dict(color='#e2e8f0'),
-                    height=400
-                )
+                apply_chart_theme(fig, height=400)
                 st.plotly_chart(fig, use_container_width=True)
 
         # Workload comparison
@@ -1068,12 +1099,7 @@ def display_human_resources():
                 fig = px.bar(workload_comp, x='Type', y='Average Workload',
                             title='📊 Teaching vs Research Workload',
                             color='Average Workload', color_continuous_scale='Viridis')
-                fig.update_layout(
-                    plot_bgcolor='rgba(0,0,0,0)',
-                    paper_bgcolor='rgba(0,0,0,0)',
-                    font=dict(color='#e2e8f0'),
-                    height=400
-                )
+                apply_chart_theme(fig, height=400)
                 st.plotly_chart(fig, use_container_width=True)
 
         with col2:
@@ -1083,18 +1109,14 @@ def display_human_resources():
                 fig = px.bar(x=dept_dist.index, y=dept_dist.values,
                             title='🏢 Top 10 Departments by Workload Records',
                             color=dept_dist.values, color_continuous_scale='Oranges')
-                fig.update_layout(
-                    plot_bgcolor='rgba(0,0,0,0)',
-                    paper_bgcolor='rgba(0,0,0,0)',
-                    font=dict(color='#e2e8f0'),
-                    xaxis=dict(tickangle=-45),
+                apply_chart_theme(fig,xaxis=dict(tickangle=-45),
                     height=400
                 )
                 st.plotly_chart(fig, use_container_width=True)
 
 
 def display_financial():
-    """Display enriched Financial analytics"""
+    """Display enriched Financial analytics with drill-down"""
     st.title("💰 Financial Management Analytics")
     st.markdown("**Complete financial oversight: budget, revenue, expenses, and capital investments**")
 
@@ -1104,7 +1126,51 @@ def display_financial():
         return
 
     if 'CHEDS-FIN-25' in available:
-        df = available['CHEDS-FIN-25']['data']
+        df_original = available['CHEDS-FIN-25']['data']
+
+        # 🔍 Drill-Down Filters
+        st.sidebar.markdown("---")
+        st.sidebar.subheader("🔍 Financial Filters")
+
+        # Institution Filter
+        all_institutions = []
+        if 'Finance_Institution_Name' in df_original.columns:
+            all_institutions = sorted([i for i in df_original['Finance_Institution_Name'].unique() if pd.notna(i)])
+
+        selected_fin_institution = st.sidebar.selectbox(
+            "🏛️ Select Institution",
+            ["All Institutions"] + all_institutions,
+            key="fin_institution_filter"
+        )
+
+        # Year Filter
+        all_years = []
+        if 'Finance_Year' in df_original.columns:
+            all_years = sorted([int(y) for y in df_original['Finance_Year'].unique() if pd.notna(y)], reverse=True)
+
+        selected_year = st.sidebar.selectbox(
+            "📅 Select Year",
+            ["All Years"] + all_years,
+            key="fin_year_filter"
+        )
+
+        # Financial Category Filter
+        selected_category = st.sidebar.selectbox(
+            "💼 Focus Area",
+            ["All Categories", "CAPEX", "OPEX", "Revenue", "Salaries", "Research Funding"],
+            key="fin_category_filter"
+        )
+
+        st.sidebar.markdown("*Filters apply to all charts below*")
+
+        # Apply filters to dataframe
+        df = df_original.copy()
+
+        if selected_fin_institution != "All Institutions" and 'Finance_Institution_Name' in df.columns:
+            df = df[df['Finance_Institution_Name'] == selected_fin_institution]
+
+        if selected_year != "All Years" and 'Finance_Year' in df.columns:
+            df = df[df['Finance_Year'] == selected_year]
 
         st.subheader("📊 Financial Overview")
 
@@ -1158,12 +1224,7 @@ def display_financial():
                         title='🏗️ CAPEX Distribution by Category',
                         hole=0.4, color_discrete_sequence=px.colors.sequential.Blues)
             fig.update_traces(textposition='inside', textinfo='percent+label')
-            fig.update_layout(
-                plot_bgcolor='rgba(0,0,0,0)',
-                paper_bgcolor='rgba(0,0,0,0)',
-                font=dict(color='#e2e8f0'),
-                height=400
-            )
+            apply_chart_theme(fig,height=400)
             st.plotly_chart(fig, use_container_width=True)
 
         with col2:
@@ -1179,11 +1240,7 @@ def display_financial():
                             title='🏛️ CAPEX by Institution (Top 10)',
                             orientation='h', color=inst_capex.values,
                             color_continuous_scale='Greens')
-                fig.update_layout(
-                    plot_bgcolor='rgba(0,0,0,0)',
-                    paper_bgcolor='rgba(0,0,0,0)',
-                    font=dict(color='#e2e8f0'),
-                    xaxis_title='CAPEX (AED)',
+                apply_chart_theme(fig,xaxis_title='CAPEX (AED)',
                     yaxis={'categoryorder': 'total ascending'},
                     height=400
                 )
@@ -1214,11 +1271,7 @@ def display_financial():
                         title='⚙️ OPEX Distribution by Category',
                         orientation='h', color='Amount',
                         color_continuous_scale='Oranges')
-            fig.update_layout(
-                plot_bgcolor='rgba(0,0,0,0)',
-                paper_bgcolor='rgba(0,0,0,0)',
-                font=dict(color='#e2e8f0'),
-                xaxis_title='OPEX (AED)',
+            apply_chart_theme(fig,xaxis_title='OPEX (AED)',
                 height=400
             )
             st.plotly_chart(fig, use_container_width=True)
@@ -1235,11 +1288,7 @@ def display_financial():
                 fig = px.bar(x=inst_opex.index, y=inst_opex.values,
                             title='🏛️ OPEX by Institution (Top 10)',
                             color=inst_opex.values, color_continuous_scale='Reds')
-                fig.update_layout(
-                    plot_bgcolor='rgba(0,0,0,0)',
-                    paper_bgcolor='rgba(0,0,0,0)',
-                    font=dict(color='#e2e8f0'),
-                    xaxis=dict(tickangle=-45),
+                apply_chart_theme(fig,xaxis=dict(tickangle=-45),
                     yaxis_title='OPEX (AED)',
                     height=400
                 )
@@ -1271,11 +1320,7 @@ def display_financial():
             fig = px.bar(revenue_df, x='Source', y='Amount',
                         title='💰 Revenue by Source',
                         color='Amount', color_continuous_scale='Greens')
-            fig.update_layout(
-                plot_bgcolor='rgba(0,0,0,0)',
-                paper_bgcolor='rgba(0,0,0,0)',
-                font=dict(color='#e2e8f0'),
-                xaxis=dict(tickangle=-45),
+            apply_chart_theme(fig,xaxis=dict(tickangle=-45),
                 yaxis_title='Revenue (AED)',
                 height=400
             )
@@ -1292,11 +1337,7 @@ def display_financial():
                             title='🏛️ Revenue by Institution (Top 10)',
                             orientation='h', color=inst_revenue.values,
                             color_continuous_scale='Teal')
-                fig.update_layout(
-                    plot_bgcolor='rgba(0,0,0,0)',
-                    paper_bgcolor='rgba(0,0,0,0)',
-                    font=dict(color='#e2e8f0'),
-                    xaxis_title='Revenue (AED)',
+                apply_chart_theme(fig,xaxis_title='Revenue (AED)',
                     yaxis={'categoryorder': 'total ascending'},
                     height=400
                 )
@@ -1325,12 +1366,7 @@ def display_financial():
                         title='👥 Salary Distribution by Category',
                         color_discrete_sequence=px.colors.sequential.Purples)
             fig.update_traces(textposition='inside', textinfo='percent+label')
-            fig.update_layout(
-                plot_bgcolor='rgba(0,0,0,0)',
-                paper_bgcolor='rgba(0,0,0,0)',
-                font=dict(color='#e2e8f0'),
-                height=400
-            )
+            apply_chart_theme(fig,height=400)
             st.plotly_chart(fig, use_container_width=True)
 
         with col2:
@@ -1345,11 +1381,7 @@ def display_financial():
                 fig = px.bar(x=inst_salary.index, y=inst_salary.values,
                             title='🏛️ Total Salaries by Institution (Top 10)',
                             color=inst_salary.values, color_continuous_scale='Viridis')
-                fig.update_layout(
-                    plot_bgcolor='rgba(0,0,0,0)',
-                    paper_bgcolor='rgba(0,0,0,0)',
-                    font=dict(color='#e2e8f0'),
-                    xaxis=dict(tickangle=-45),
+                apply_chart_theme(fig,xaxis=dict(tickangle=-45),
                     yaxis_title='Salaries (AED)',
                     height=400
                 )
@@ -1379,11 +1411,7 @@ def display_financial():
                         title='🔬 Research Funding by Source',
                         orientation='h', color='Amount',
                         color_continuous_scale='Blues')
-            fig.update_layout(
-                plot_bgcolor='rgba(0,0,0,0)',
-                paper_bgcolor='rgba(0,0,0,0)',
-                font=dict(color='#e2e8f0'),
-                xaxis_title='Funding (AED)',
+            apply_chart_theme(fig,xaxis_title='Funding (AED)',
                 height=400
             )
             st.plotly_chart(fig, use_container_width=True)
@@ -1398,11 +1426,7 @@ def display_financial():
                 fig = px.bar(x=inst_research.index, y=inst_research.values,
                             title='🏛️ Research Funding by Institution (Top 10)',
                             color=inst_research.values, color_continuous_scale='Greens')
-                fig.update_layout(
-                    plot_bgcolor='rgba(0,0,0,0)',
-                    paper_bgcolor='rgba(0,0,0,0)',
-                    font=dict(color='#e2e8f0'),
-                    xaxis=dict(tickangle=-45),
+                apply_chart_theme(fig,xaxis=dict(tickangle=-45),
                     yaxis_title='Research Funding (AED)',
                     height=400
                 )
@@ -1428,16 +1452,7 @@ def display_financial():
                                     name='Revenue', marker_color='#10b981'))
                 fig.add_trace(go.Bar(x=health_data['Finance_Institution_Name'], y=health_data['Expenses'],
                                     name='Expenses', marker_color='#ef4444'))
-                fig.update_layout(
-                    title='💰 Revenue vs Expenses by Institution',
-                    barmode='group',
-                    plot_bgcolor='rgba(0,0,0,0)',
-                    paper_bgcolor='rgba(0,0,0,0)',
-                    font=dict(color='#e2e8f0'),
-                    xaxis=dict(tickangle=-45),
-                    yaxis_title='Amount (AED)',
-                    height=400
-                )
+                apply_chart_theme(fig, title='💰 Revenue vs Expenses by Institution', barmode='group', xaxis=dict(tickangle=-45), yaxis_title='Amount (AED)', height=400)
                 st.plotly_chart(fig, use_container_width=True)
 
         with col2:
@@ -1457,16 +1472,32 @@ def display_financial():
                                         mode='lines+markers', name='Expenses',
                                         line=dict(color='#ef4444', width=3),
                                         marker=dict(size=10)))
-                fig.update_layout(
-                    title='📅 Financial Trends Over Years',
-                    plot_bgcolor='rgba(0,0,0,0)',
-                    paper_bgcolor='rgba(0,0,0,0)',
-                    font=dict(color='#e2e8f0'),
-                    xaxis_title='Year',
-                    yaxis_title='Amount (AED)',
-                    height=400
-                )
+                apply_chart_theme(fig, title='📅 Financial Trends Over Years', xaxis_title='Year', yaxis_title='Amount (AED)', height=400)
                 st.plotly_chart(fig, use_container_width=True)
+
+        # 🔍 Detailed Financial Data View
+        st.markdown("---")
+        st.subheader("🔍 Detailed Financial Data")
+        st.markdown(f"**Showing {len(df):,} institution records** (filtered)")
+
+        with st.expander("💰 View Detailed Financial Records"):
+            # Show key columns for better readability
+            display_cols = ['Finance_Institution_Name', 'Finance_Year',
+                           'Finance_Total_Revenue', 'Finance_Total_Expenses']
+            # Add all existing columns
+            available_cols = [col for col in display_cols if col in df.columns]
+            available_cols += [col for col in df.columns if col not in available_cols]
+
+            st.dataframe(df[available_cols], use_container_width=True, height=400)
+
+            # Export functionality
+            csv = df.to_csv(index=False)
+            st.download_button(
+                label="📥 Download Filtered Data as CSV",
+                data=csv,
+                file_name=f"financial_data_{selected_year}_{selected_fin_institution}.csv",
+                mime="text/csv"
+            )
 
 
 def display_research():
@@ -1524,13 +1555,7 @@ def display_research():
                             title='🏛️ Projects by Institution (Top 10)',
                             orientation='h', color=inst_counts.values,
                             color_continuous_scale='Blues')
-                fig.update_layout(
-                    plot_bgcolor='rgba(0,0,0,0)',
-                    paper_bgcolor='rgba(0,0,0,0)',
-                    font=dict(color='#e2e8f0'),
-                    height=400,
-                    yaxis={'categoryorder': 'total ascending'}
-                )
+                apply_chart_theme(fig, height=400, yaxis={'categoryorder': 'total ascending'})
                 st.plotly_chart(fig, use_container_width=True)
 
         with col2:
@@ -1540,12 +1565,7 @@ def display_research():
                             title='🎯 Projects by Department (Top 10)',
                             color_discrete_sequence=px.colors.sequential.Viridis)
                 fig.update_traces(textposition='inside', textinfo='percent+label')
-                fig.update_layout(
-                    plot_bgcolor='rgba(0,0,0,0)',
-                    paper_bgcolor='rgba(0,0,0,0)',
-                    font=dict(color='#e2e8f0'),
-                    height=400
-                )
+                apply_chart_theme(fig, height=400)
                 st.plotly_chart(fig, use_container_width=True)
 
     # Publications Analysis
@@ -1580,13 +1600,7 @@ def display_research():
                             title='📚 Publications by Institution (Top 10)',
                             orientation='h', color=pub_inst.values,
                             color_continuous_scale='Teal')
-                fig.update_layout(
-                    plot_bgcolor='rgba(0,0,0,0)',
-                    paper_bgcolor='rgba(0,0,0,0)',
-                    font=dict(color='#e2e8f0'),
-                    height=400,
-                    yaxis={'categoryorder': 'total ascending'}
-                )
+                apply_chart_theme(fig, height=400, yaxis={'categoryorder': 'total ascending'})
                 st.plotly_chart(fig, use_container_width=True)
 
         with col2:
@@ -1597,12 +1611,7 @@ def display_research():
                             title='📊 Publication Types',
                             hole=0.4, color_discrete_sequence=px.colors.sequential.Greens)
                 fig.update_traces(textposition='inside', textinfo='percent+label+value')
-                fig.update_layout(
-                    plot_bgcolor='rgba(0,0,0,0)',
-                    paper_bgcolor='rgba(0,0,0,0)',
-                    font=dict(color='#e2e8f0'),
-                    height=400
-                )
+                apply_chart_theme(fig, height=400)
                 st.plotly_chart(fig, use_container_width=True)
 
         # Additional publication visualizations
@@ -1615,14 +1624,9 @@ def display_research():
                             title='📈 Publications Trend by Year',
                             markers=True)
                 fig.update_traces(line_color='#6366f1', marker=dict(size=8))
-                fig.update_layout(
-                    plot_bgcolor='rgba(0,0,0,0)',
-                    paper_bgcolor='rgba(0,0,0,0)',
-                    font=dict(color='#e2e8f0'),
-                    xaxis_title='Year',
+                apply_chart_theme(fig,xaxis_title='Year',
                     yaxis_title='Number of Publications',
-                    height=400
-                )
+                    height=400)
                 st.plotly_chart(fig, use_container_width=True)
 
         with col2:
@@ -1632,11 +1636,7 @@ def display_research():
                 fig = px.bar(x=pub_area.index, y=pub_area.values,
                             title='🎯 Top 10 Publication Areas',
                             color=pub_area.values, color_continuous_scale='Viridis')
-                fig.update_layout(
-                    plot_bgcolor='rgba(0,0,0,0)',
-                    paper_bgcolor='rgba(0,0,0,0)',
-                    font=dict(color='#e2e8f0'),
-                    xaxis=dict(tickangle=-45),
+                apply_chart_theme(fig,xaxis=dict(tickangle=-45),
                     height=400
                 )
                 st.plotly_chart(fig, use_container_width=True)
@@ -1655,13 +1655,7 @@ def display_research():
                             title='🏆 Top Cited Institutions',
                             orientation='h', color=top_cited.values,
                             color_continuous_scale='Oranges')
-                fig.update_layout(
-                    plot_bgcolor='rgba(0,0,0,0)',
-                    paper_bgcolor='rgba(0,0,0,0)',
-                    font=dict(color='#e2e8f0'),
-                    height=400,
-                    yaxis={'categoryorder': 'total ascending'}
-                )
+                apply_chart_theme(fig, height=400, yaxis={'categoryorder': 'total ascending'})
                 st.plotly_chart(fig, use_container_width=True)
 
         with col2:
@@ -1671,12 +1665,7 @@ def display_research():
                             title='👥 Publications by Researcher Type',
                             color_discrete_sequence=px.colors.sequential.Blues)
                 fig.update_traces(textposition='inside', textinfo='percent+label')
-                fig.update_layout(
-                    plot_bgcolor='rgba(0,0,0,0)',
-                    paper_bgcolor='rgba(0,0,0,0)',
-                    font=dict(color='#e2e8f0'),
-                    height=400
-                )
+                apply_chart_theme(fig, height=400)
                 st.plotly_chart(fig, use_container_width=True)
 
 
@@ -1730,11 +1719,7 @@ def display_facilities():
                             title='📊 Average Class Size by Institution (Top 10)',
                             color=inst_class.values,
                             color_continuous_scale='Blues')
-                fig.update_layout(
-                    plot_bgcolor='rgba(0,0,0,0)',
-                    paper_bgcolor='rgba(0,0,0,0)',
-                    font=dict(color='#e2e8f0'),
-                    xaxis=dict(tickangle=-45),
+                apply_chart_theme(fig,xaxis=dict(tickangle=-45),
                     yaxis_title='Avg Class Size',
                     height=400
                 )
@@ -1750,11 +1735,7 @@ def display_facilities():
                             title='🔬 Average Lab Size by Institution (Top 10)',
                             color=inst_lab.values,
                             color_continuous_scale='Greens')
-                fig.update_layout(
-                    plot_bgcolor='rgba(0,0,0,0)',
-                    paper_bgcolor='rgba(0,0,0,0)',
-                    font=dict(color='#e2e8f0'),
-                    xaxis=dict(tickangle=-45),
+                apply_chart_theme(fig,xaxis=dict(tickangle=-45),
                     yaxis_title='Avg Lab Size',
                     height=400
                 )
@@ -1770,12 +1751,7 @@ def display_facilities():
                             hole=0.4,
                             color_discrete_sequence=px.colors.sequential.Viridis)
                 fig.update_traces(textposition='inside', textinfo='percent+label')
-                fig.update_layout(
-                    plot_bgcolor='rgba(0,0,0,0)',
-                    paper_bgcolor='rgba(0,0,0,0)',
-                    font=dict(color='#e2e8f0'),
-                    height=400
-                )
+                apply_chart_theme(fig, height=400)
                 st.plotly_chart(fig, use_container_width=True)
 
         with col2:
@@ -1785,13 +1761,8 @@ def display_facilities():
                             title='📚 Top 10 Areas of Specialization',
                             orientation='h', color=spec_dist.values,
                             color_continuous_scale='Purples')
-                fig.update_layout(
-                    plot_bgcolor='rgba(0,0,0,0)',
-                    paper_bgcolor='rgba(0,0,0,0)',
-                    font=dict(color='#e2e8f0'),
-                    yaxis={'categoryorder': 'total ascending'},
-                    height=400
-                )
+                apply_chart_theme(fig,yaxis={'categoryorder': 'total ascending'},
+                    height=400)
                 st.plotly_chart(fig, use_container_width=True)
 
     # Facility Overview
@@ -1835,12 +1806,7 @@ def display_facilities():
                             hole=0.4,
                             color_discrete_sequence=px.colors.sequential.Blues)
                 fig.update_traces(textposition='inside', textinfo='percent+label')
-                fig.update_layout(
-                    plot_bgcolor='rgba(0,0,0,0)',
-                    paper_bgcolor='rgba(0,0,0,0)',
-                    font=dict(color='#e2e8f0'),
-                    height=400
-                )
+                apply_chart_theme(fig, height=400)
                 st.plotly_chart(fig, use_container_width=True)
 
         with col2:
@@ -1850,12 +1816,7 @@ def display_facilities():
                             title='🏛️ Ownership Distribution',
                             color_discrete_sequence=px.colors.sequential.Greens)
                 fig.update_traces(textposition='inside', textinfo='percent+label')
-                fig.update_layout(
-                    plot_bgcolor='rgba(0,0,0,0)',
-                    paper_bgcolor='rgba(0,0,0,0)',
-                    font=dict(color='#e2e8f0'),
-                    height=400
-                )
+                apply_chart_theme(fig, height=400)
                 st.plotly_chart(fig, use_container_width=True)
 
         # Facility breakdown
@@ -1879,12 +1840,7 @@ def display_facilities():
                         title='🏢 Facility Types Distribution',
                         orientation='h', color='Count',
                         color_continuous_scale='Teal')
-            fig.update_layout(
-                plot_bgcolor='rgba(0,0,0,0)',
-                paper_bgcolor='rgba(0,0,0,0)',
-                font=dict(color='#e2e8f0'),
-                height=400
-            )
+            apply_chart_theme(fig,height=400)
             st.plotly_chart(fig, use_container_width=True)
 
         with col2:
@@ -1897,11 +1853,7 @@ def display_facilities():
                 fig = px.bar(x=inst_capacity.index, y=inst_capacity.values,
                             title='🏛️ Room Count by Institution (Top 10)',
                             color=inst_capacity.values, color_continuous_scale='Blues')
-                fig.update_layout(
-                    plot_bgcolor='rgba(0,0,0,0)',
-                    paper_bgcolor='rgba(0,0,0,0)',
-                    font=dict(color='#e2e8f0'),
-                    xaxis=dict(tickangle=-45),
+                apply_chart_theme(fig,xaxis=dict(tickangle=-45),
                     yaxis_title='Number of Rooms',
                     height=400
                 )
@@ -1920,11 +1872,7 @@ def display_facilities():
                 fig = px.bar(x=inst_ratio.index, y=inst_ratio.values,
                             title='👨‍🏫 Student-Faculty Ratio by Institution (Top 10)',
                             color=inst_ratio.values, color_continuous_scale='Oranges')
-                fig.update_layout(
-                    plot_bgcolor='rgba(0,0,0,0)',
-                    paper_bgcolor='rgba(0,0,0,0)',
-                    font=dict(color='#e2e8f0'),
-                    xaxis=dict(tickangle=-45),
+                apply_chart_theme(fig,xaxis=dict(tickangle=-45),
                     yaxis_title='Student-Faculty Ratio',
                     height=400
                 )
@@ -1939,11 +1887,7 @@ def display_facilities():
                 fig = px.bar(x=inst_dropout.index, y=inst_dropout.values,
                             title='📉 Student Dropout Rate by Institution (Top 10)',
                             color=inst_dropout.values, color_continuous_scale='Reds')
-                fig.update_layout(
-                    plot_bgcolor='rgba(0,0,0,0)',
-                    paper_bgcolor='rgba(0,0,0,0)',
-                    font=dict(color='#e2e8f0'),
-                    xaxis=dict(tickangle=-45),
+                apply_chart_theme(fig,xaxis=dict(tickangle=-45),
                     yaxis_title='Dropout Rate (%)',
                     height=400
                 )
@@ -1969,11 +1913,7 @@ def display_facilities():
             fig = px.bar(library_df, x='Resource', y='Count',
                         title='📚 Library Resources Inventory',
                         color='Count', color_continuous_scale='Purples')
-            fig.update_layout(
-                plot_bgcolor='rgba(0,0,0,0)',
-                paper_bgcolor='rgba(0,0,0,0)',
-                font=dict(color='#e2e8f0'),
-                xaxis=dict(tickangle=-45),
+            apply_chart_theme(fig,xaxis=dict(tickangle=-45),
                 height=400
             )
             st.plotly_chart(fig, use_container_width=True)
@@ -1989,14 +1929,9 @@ def display_facilities():
                             title='📚 Library Books by Institution (Top 10)',
                             orientation='h', color=inst_books.values,
                             color_continuous_scale='Greens')
-                fig.update_layout(
-                    plot_bgcolor='rgba(0,0,0,0)',
-                    paper_bgcolor='rgba(0,0,0,0)',
-                    font=dict(color='#e2e8f0'),
-                    yaxis={'categoryorder': 'total ascending'},
+                apply_chart_theme(fig,yaxis={'categoryorder': 'total ascending'},
                     xaxis_title='Number of Books',
-                    height=400
-                )
+                    height=400)
                 st.plotly_chart(fig, use_container_width=True)
 
         # Special facilities
@@ -2021,12 +1956,7 @@ def display_facilities():
                         title='🏢 Amenities Availability Across Institutions',
                         orientation='h', color='Institutions',
                         color_continuous_scale='Blues')
-            fig.update_layout(
-                plot_bgcolor='rgba(0,0,0,0)',
-                paper_bgcolor='rgba(0,0,0,0)',
-                font=dict(color='#e2e8f0'),
-                height=400
-            )
+            apply_chart_theme(fig,height=400)
             st.plotly_chart(fig, use_container_width=True)
 
         with col2:
@@ -2036,11 +1966,7 @@ def display_facilities():
                 fig = px.bar(x=accred_dist.index, y=accred_dist.values,
                             title='🏅 Accreditation Bodies (Top 10)',
                             color=accred_dist.values, color_continuous_scale='Greens')
-                fig.update_layout(
-                    plot_bgcolor='rgba(0,0,0,0)',
-                    paper_bgcolor='rgba(0,0,0,0)',
-                    font=dict(color='#e2e8f0'),
-                    xaxis=dict(tickangle=-45),
+                apply_chart_theme(fig,xaxis=dict(tickangle=-45),
                     yaxis_title='Number of Institutions',
                     height=400
                 )
@@ -2048,7 +1974,7 @@ def display_facilities():
 
 
 def display_support():
-    """Display enriched Support Services analytics"""
+    """Display enriched Support Services analytics with drill-down"""
     st.title("🎯 Supporting Services Analytics")
     st.markdown("**Student support and engagement: events, surveys, counseling, and services**")
 
@@ -2057,18 +1983,77 @@ def display_support():
         st.warning("⚠️ No Support Services data available. Please load CSV files from the sidebar.")
         return
 
+    # 🔍 Drill-Down Filters
+    st.sidebar.markdown("---")
+    st.sidebar.subheader("🔍 Support Services Filters")
+
+    # Institution Filter for Events
+    all_institutions = set()
+    if 'CHEDS-SUP-35' in available and 'Events_InstName' in available['CHEDS-SUP-35']['data'].columns:
+        all_institutions.update(available['CHEDS-SUP-35']['data']['Events_InstName'].unique())
+    if 'CHEDS-SUP-36' in available and 'Survey_Institution_Name' in available['CHEDS-SUP-36']['data'].columns:
+        all_institutions.update(available['CHEDS-SUP-36']['data']['Survey_Institution_Name'].unique())
+
+    all_institutions = sorted([i for i in all_institutions if pd.notna(i)])
+
+    selected_support_institution = st.sidebar.selectbox(
+        "🏛️ Select Institution",
+        ["All Institutions"] + all_institutions,
+        key="support_institution_filter"
+    )
+
+    # Event Type Filter
+    all_event_types = []
+    if 'CHEDS-SUP-35' in available and 'Events_Event_Type' in available['CHEDS-SUP-35']['data'].columns:
+        all_event_types = sorted([t for t in available['CHEDS-SUP-35']['data']['Events_Event_Type'].unique() if pd.notna(t)])
+
+    selected_event_type = st.sidebar.selectbox(
+        "🎪 Event Type",
+        ["All Types"] + all_event_types,
+        key="support_event_type_filter"
+    )
+
+    # Event Category Filter
+    all_event_categories = []
+    if 'CHEDS-SUP-35' in available and 'Events_Category' in available['CHEDS-SUP-35']['data'].columns:
+        all_event_categories = sorted([c for c in available['CHEDS-SUP-35']['data']['Events_Category'].unique() if pd.notna(c)])
+
+    selected_event_category = st.sidebar.selectbox(
+        "📂 Event Category",
+        ["All Categories"] + all_event_categories,
+        key="support_event_category_filter"
+    )
+
+    st.sidebar.markdown("*Filters apply to all charts below*")
+
     # KPIs
     st.subheader("📊 Support Services Overview")
     cols = st.columns(4)
 
     if 'CHEDS-SUP-35' in available:
+        df_events = available['CHEDS-SUP-35']['data'].copy()
+
+        # Apply filters
+        if selected_support_institution != "All Institutions" and 'Events_InstName' in df_events.columns:
+            df_events = df_events[df_events['Events_InstName'] == selected_support_institution]
+        if selected_event_type != "All Types" and 'Events_Event_Type' in df_events.columns:
+            df_events = df_events[df_events['Events_Event_Type'] == selected_event_type]
+        if selected_event_category != "All Categories" and 'Events_Category' in df_events.columns:
+            df_events = df_events[df_events['Events_Category'] == selected_event_category]
+
         with cols[0]:
-            count = len(available['CHEDS-SUP-35']['data'])
+            count = len(df_events)
             st.metric("🎪 Events", f"{count:,}")
 
     if 'CHEDS-SUP-36' in available:
+        df_surveys = available['CHEDS-SUP-36']['data'].copy()
+
+        # Apply filters
+        if selected_support_institution != "All Institutions" and 'Survey_Institution_Name' in df_surveys.columns:
+            df_surveys = df_surveys[df_surveys['Survey_Institution_Name'] == selected_support_institution]
+
         with cols[1]:
-            count = len(available['CHEDS-SUP-36']['data'])
+            count = len(df_surveys)
             st.metric("📋 Surveys", f"{count:,}")
 
     if 'CHEDS-SUP-40' in available:
@@ -2086,7 +2071,15 @@ def display_support():
     # Events Analysis
     if 'CHEDS-SUP-35' in available:
         st.subheader("🎪 Events Analysis")
-        df = available['CHEDS-SUP-35']['data']
+        df = available['CHEDS-SUP-35']['data'].copy()
+
+        # Apply filters
+        if selected_support_institution != "All Institutions" and 'Events_InstName' in df.columns:
+            df = df[df['Events_InstName'] == selected_support_institution]
+        if selected_event_type != "All Types" and 'Events_Event_Type' in df.columns:
+            df = df[df['Events_Event_Type'] == selected_event_type]
+        if selected_event_category != "All Categories" and 'Events_Category' in df.columns:
+            df = df[df['Events_Category'] == selected_event_category]
 
         # Event metrics
         col1, col2, col3, col4 = st.columns(4)
@@ -2113,13 +2106,7 @@ def display_support():
                             title='🏛️ Events by Institution (Top 10)',
                             orientation='h', color=event_inst.values,
                             color_continuous_scale='Viridis')
-                fig.update_layout(
-                    plot_bgcolor='rgba(0,0,0,0)',
-                    paper_bgcolor='rgba(0,0,0,0)',
-                    font=dict(color='#e2e8f0'),
-                    height=400,
-                    yaxis={'categoryorder': 'total ascending'}
-                )
+                apply_chart_theme(fig, height=400, yaxis={'categoryorder': 'total ascending'})
                 st.plotly_chart(fig, use_container_width=True)
 
         with col2:
@@ -2129,12 +2116,7 @@ def display_support():
                             title='🎭 Event Types',
                             color_discrete_sequence=px.colors.sequential.Plasma)
                 fig.update_traces(textposition='inside', textinfo='percent+label')
-                fig.update_layout(
-                    plot_bgcolor='rgba(0,0,0,0)',
-                    paper_bgcolor='rgba(0,0,0,0)',
-                    font=dict(color='#e2e8f0'),
-                    height=400
-                )
+                apply_chart_theme(fig, height=400)
                 st.plotly_chart(fig, use_container_width=True)
 
         col1, col2 = st.columns(2)
@@ -2145,11 +2127,7 @@ def display_support():
                 fig = px.bar(x=event_cat.index, y=event_cat.values,
                             title='📂 Event Categories (Top 10)',
                             color=event_cat.values, color_continuous_scale='Teal')
-                fig.update_layout(
-                    plot_bgcolor='rgba(0,0,0,0)',
-                    paper_bgcolor='rgba(0,0,0,0)',
-                    font=dict(color='#e2e8f0'),
-                    xaxis=dict(tickangle=-45),
+                apply_chart_theme(fig,xaxis=dict(tickangle=-45),
                     height=400
                 )
                 st.plotly_chart(fig, use_container_width=True)
@@ -2162,12 +2140,7 @@ def display_support():
                             hole=0.4,
                             color_discrete_sequence=px.colors.sequential.Sunset)
                 fig.update_traces(textposition='inside', textinfo='percent+label')
-                fig.update_layout(
-                    plot_bgcolor='rgba(0,0,0,0)',
-                    paper_bgcolor='rgba(0,0,0,0)',
-                    font=dict(color='#e2e8f0'),
-                    height=400
-                )
+                apply_chart_theme(fig, height=400)
                 st.plotly_chart(fig, use_container_width=True)
 
         col1, col2 = st.columns(2)
@@ -2179,13 +2152,7 @@ def display_support():
                             title='👥 Target Audience (Top 8)',
                             orientation='h', color=audience_dist.values,
                             color_continuous_scale='Blues')
-                fig.update_layout(
-                    plot_bgcolor='rgba(0,0,0,0)',
-                    paper_bgcolor='rgba(0,0,0,0)',
-                    font=dict(color='#e2e8f0'),
-                    height=400,
-                    yaxis={'categoryorder': 'total ascending'}
-                )
+                apply_chart_theme(fig, height=400, yaxis={'categoryorder': 'total ascending'})
                 st.plotly_chart(fig, use_container_width=True)
 
         with col2:
@@ -2195,12 +2162,7 @@ def display_support():
                             title='🔄 Event Frequency',
                             color_discrete_sequence=px.colors.sequential.Viridis)
                 fig.update_traces(textposition='inside', textinfo='percent+label')
-                fig.update_layout(
-                    plot_bgcolor='rgba(0,0,0,0)',
-                    paper_bgcolor='rgba(0,0,0,0)',
-                    font=dict(color='#e2e8f0'),
-                    height=400
-                )
+                apply_chart_theme(fig, height=400)
                 st.plotly_chart(fig, use_container_width=True)
 
         col1, col2 = st.columns(2)
@@ -2211,11 +2173,7 @@ def display_support():
                 fig = px.bar(x=dept_events.index, y=dept_events.values,
                             title='🏢 Events by Department (Top 10)',
                             color=dept_events.values, color_continuous_scale='Purples')
-                fig.update_layout(
-                    plot_bgcolor='rgba(0,0,0,0)',
-                    paper_bgcolor='rgba(0,0,0,0)',
-                    font=dict(color='#e2e8f0'),
-                    xaxis=dict(tickangle=-45),
+                apply_chart_theme(fig,xaxis=dict(tickangle=-45),
                     height=400
                 )
                 st.plotly_chart(fig, use_container_width=True)
@@ -2228,11 +2186,7 @@ def display_support():
                 fig = px.bar(x=avg_attend.index, y=avg_attend.values,
                             title='📊 Average Attendance by Event Type',
                             color=avg_attend.values, color_continuous_scale='Greens')
-                fig.update_layout(
-                    plot_bgcolor='rgba(0,0,0,0)',
-                    paper_bgcolor='rgba(0,0,0,0)',
-                    font=dict(color='#e2e8f0'),
-                    xaxis=dict(tickangle=-45),
+                apply_chart_theme(fig,xaxis=dict(tickangle=-45),
                     yaxis_title='Avg Attendees',
                     height=400
                 )
@@ -2242,7 +2196,11 @@ def display_support():
     if 'CHEDS-SUP-36' in available:
         st.markdown("---")
         st.subheader("📋 Surveys Analysis")
-        df = available['CHEDS-SUP-36']['data']
+        df = available['CHEDS-SUP-36']['data'].copy()
+
+        # Apply filters
+        if selected_support_institution != "All Institutions" and 'Survey_Institution_Name' in df.columns:
+            df = df[df['Survey_Institution_Name'] == selected_support_institution]
 
         # Survey metrics
         col1, col2, col3, col4 = st.columns(4)
@@ -2268,11 +2226,7 @@ def display_support():
                 fig = px.bar(x=survey_inst.index, y=survey_inst.values,
                             title='📊 Surveys by Institution (Top 10)',
                             color=survey_inst.values, color_continuous_scale='Teal')
-                fig.update_layout(
-                    plot_bgcolor='rgba(0,0,0,0)',
-                    paper_bgcolor='rgba(0,0,0,0)',
-                    font=dict(color='#e2e8f0'),
-                    xaxis=dict(tickangle=-45),
+                apply_chart_theme(fig,xaxis=dict(tickangle=-45),
                     height=400
                 )
                 st.plotly_chart(fig, use_container_width=True)
@@ -2284,14 +2238,9 @@ def display_support():
                              title='📅 Survey Trends by Academic Year',
                              markers=True)
                 fig.update_traces(line_color='#10b981', marker=dict(size=10))
-                fig.update_layout(
-                    plot_bgcolor='rgba(0,0,0,0)',
-                    paper_bgcolor='rgba(0,0,0,0)',
-                    font=dict(color='#e2e8f0'),
-                    xaxis_title='Academic Year',
+                apply_chart_theme(fig,xaxis_title='Academic Year',
                     yaxis_title='Number of Surveys',
-                    height=400
-                )
+                    height=400)
                 st.plotly_chart(fig, use_container_width=True)
 
         # Faculty Survey Ratings
@@ -2314,14 +2263,9 @@ def display_support():
                             title='📊 Faculty Survey Average Ratings',
                             orientation='h', color=list(faculty_avgs.values()),
                             color_continuous_scale='Blues')
-                fig.update_layout(
-                    plot_bgcolor='rgba(0,0,0,0)',
-                    paper_bgcolor='rgba(0,0,0,0)',
-                    font=dict(color='#e2e8f0'),
-                    xaxis_title='Average Rating',
+                apply_chart_theme(fig,xaxis_title='Average Rating',
                     yaxis={'categoryorder': 'total ascending'},
-                    height=400
-                )
+                    height=400)
                 st.plotly_chart(fig, use_container_width=True)
 
         # Staff Survey Ratings
@@ -2341,14 +2285,9 @@ def display_support():
                             title='📊 Staff Survey Average Ratings',
                             orientation='h', color=list(staff_avgs.values()),
                             color_continuous_scale='Greens')
-                fig.update_layout(
-                    plot_bgcolor='rgba(0,0,0,0)',
-                    paper_bgcolor='rgba(0,0,0,0)',
-                    font=dict(color='#e2e8f0'),
-                    xaxis_title='Average Rating',
+                apply_chart_theme(fig,xaxis_title='Average Rating',
                     yaxis={'categoryorder': 'total ascending'},
-                    height=400
-                )
+                    height=400)
                 st.plotly_chart(fig, use_container_width=True)
 
         # Department Analysis
@@ -2361,13 +2300,8 @@ def display_support():
                             title='🏢 Surveys by Department (Top 10)',
                             orientation='h', color=dept_surveys.values,
                             color_continuous_scale='Purples')
-                fig.update_layout(
-                    plot_bgcolor='rgba(0,0,0,0)',
-                    paper_bgcolor='rgba(0,0,0,0)',
-                    font=dict(color='#e2e8f0'),
-                    yaxis={'categoryorder': 'total ascending'},
-                    height=400
-                )
+                apply_chart_theme(fig,yaxis={'categoryorder': 'total ascending'},
+                    height=400)
                 st.plotly_chart(fig, use_container_width=True)
 
         with col2:
@@ -2384,12 +2318,7 @@ def display_support():
                               {'range': [2, 3.5], 'color': "#f59e0b"},
                               {'range': [3.5, 5], 'color': "#10b981"}],
                           'threshold': {'line': {'color': "white", 'width': 4}, 'thickness': 0.75, 'value': policy_avg}}))
-                fig.update_layout(
-                    plot_bgcolor='rgba(0,0,0,0)',
-                    paper_bgcolor='rgba(0,0,0,0)',
-                    font=dict(color='#e2e8f0'),
-                    height=400
-                )
+                apply_chart_theme(fig, height=400)
                 st.plotly_chart(fig, use_container_width=True)
 
 
@@ -2453,13 +2382,7 @@ def display_advancement():
                             title='🏛️ Partnerships by Institution (Top 10)',
                             orientation='h', color=partner_inst.values,
                             color_continuous_scale='Blues')
-                fig.update_layout(
-                    plot_bgcolor='rgba(0,0,0,0)',
-                    paper_bgcolor='rgba(0,0,0,0)',
-                    font=dict(color='#e2e8f0'),
-                    height=400,
-                    yaxis={'categoryorder': 'total ascending'}
-                )
+                apply_chart_theme(fig, height=400, yaxis={'categoryorder': 'total ascending'})
                 st.plotly_chart(fig, use_container_width=True)
 
         with col2:
@@ -2469,12 +2392,7 @@ def display_advancement():
                             title='🎯 Partnership Types',
                             hole=0.4, color_discrete_sequence=px.colors.sequential.Viridis)
                 fig.update_traces(textposition='inside', textinfo='percent+label')
-                fig.update_layout(
-                    plot_bgcolor='rgba(0,0,0,0)',
-                    paper_bgcolor='rgba(0,0,0,0)',
-                    font=dict(color='#e2e8f0'),
-                    height=400
-                )
+                apply_chart_theme(fig, height=400)
                 st.plotly_chart(fig, use_container_width=True)
 
         col1, col2 = st.columns(2)
@@ -2485,11 +2403,7 @@ def display_advancement():
                 fig = px.bar(x=partner_cat.index, y=partner_cat.values,
                             title='🏢 Partner Types (Top 8)',
                             color=partner_cat.values, color_continuous_scale='Teal')
-                fig.update_layout(
-                    plot_bgcolor='rgba(0,0,0,0)',
-                    paper_bgcolor='rgba(0,0,0,0)',
-                    font=dict(color='#e2e8f0'),
-                    xaxis=dict(tickangle=-45),
+                apply_chart_theme(fig,xaxis=dict(tickangle=-45),
                     height=400
                 )
                 st.plotly_chart(fig, use_container_width=True)
@@ -2501,12 +2415,7 @@ def display_advancement():
                             title='📂 Partner Categories',
                             color_discrete_sequence=px.colors.sequential.Plasma)
                 fig.update_traces(textposition='inside', textinfo='percent+label')
-                fig.update_layout(
-                    plot_bgcolor='rgba(0,0,0,0)',
-                    paper_bgcolor='rgba(0,0,0,0)',
-                    font=dict(color='#e2e8f0'),
-                    height=400
-                )
+                apply_chart_theme(fig, height=400)
                 st.plotly_chart(fig, use_container_width=True)
 
         col1, col2 = st.columns(2)
@@ -2518,13 +2427,8 @@ def display_advancement():
                             title='🏭 Partner Industries (Top 10)',
                             orientation='h', color=industry_dist.values,
                             color_continuous_scale='Greens')
-                fig.update_layout(
-                    plot_bgcolor='rgba(0,0,0,0)',
-                    paper_bgcolor='rgba(0,0,0,0)',
-                    font=dict(color='#e2e8f0'),
-                    yaxis={'categoryorder': 'total ascending'},
-                    height=400
-                )
+                apply_chart_theme(fig,yaxis={'categoryorder': 'total ascending'},
+                    height=400)
                 st.plotly_chart(fig, use_container_width=True)
 
         with col2:
@@ -2533,11 +2437,7 @@ def display_advancement():
                 fig = px.bar(x=country_dist.index, y=country_dist.values,
                             title='🌍 Partner Countries (Top 10)',
                             color=country_dist.values, color_continuous_scale='Purples')
-                fig.update_layout(
-                    plot_bgcolor='rgba(0,0,0,0)',
-                    paper_bgcolor='rgba(0,0,0,0)',
-                    font=dict(color='#e2e8f0'),
-                    xaxis=dict(tickangle=-45),
+                apply_chart_theme(fig,xaxis=dict(tickangle=-45),
                     height=400
                 )
                 st.plotly_chart(fig, use_container_width=True)
@@ -2551,14 +2451,9 @@ def display_advancement():
                              title='📅 Partnership Trends by Year',
                              markers=True)
                 fig.update_traces(line_color='#6366f1', marker=dict(size=10))
-                fig.update_layout(
-                    plot_bgcolor='rgba(0,0,0,0)',
-                    paper_bgcolor='rgba(0,0,0,0)',
-                    font=dict(color='#e2e8f0'),
-                    xaxis_title='Year',
+                apply_chart_theme(fig,xaxis_title='Year',
                     yaxis_title='Number of Partnerships',
-                    height=400
-                )
+                    height=400)
                 st.plotly_chart(fig, use_container_width=True)
 
         with col2:
@@ -2567,11 +2462,7 @@ def display_advancement():
                 fig = px.bar(x=dept_partner.index, y=dept_partner.values,
                             title='🏢 Partnerships by Department (Top 10)',
                             color=dept_partner.values, color_continuous_scale='Blues')
-                fig.update_layout(
-                    plot_bgcolor='rgba(0,0,0,0)',
-                    paper_bgcolor='rgba(0,0,0,0)',
-                    font=dict(color='#e2e8f0'),
-                    xaxis=dict(tickangle=-45),
+                apply_chart_theme(fig,xaxis=dict(tickangle=-45),
                     height=400
                 )
                 st.plotly_chart(fig, use_container_width=True)
@@ -2585,13 +2476,8 @@ def display_advancement():
                             title='🎓 Partnerships by College (Top 8)',
                             orientation='h', color=college_partner.values,
                             color_continuous_scale='Oranges')
-                fig.update_layout(
-                    plot_bgcolor='rgba(0,0,0,0)',
-                    paper_bgcolor='rgba(0,0,0,0)',
-                    font=dict(color='#e2e8f0'),
-                    yaxis={'categoryorder': 'total ascending'},
-                    height=400
-                )
+                apply_chart_theme(fig,yaxis={'categoryorder': 'total ascending'},
+                    height=400)
                 st.plotly_chart(fig, use_container_width=True)
 
         with col2:
@@ -2602,11 +2488,7 @@ def display_advancement():
                 fig = px.bar(x=avg_value.index, y=avg_value.values,
                             title='💰 Average Value by Partnership Type',
                             color=avg_value.values, color_continuous_scale='Greens')
-                fig.update_layout(
-                    plot_bgcolor='rgba(0,0,0,0)',
-                    paper_bgcolor='rgba(0,0,0,0)',
-                    font=dict(color='#e2e8f0'),
-                    xaxis=dict(tickangle=-45),
+                apply_chart_theme(fig,xaxis=dict(tickangle=-45),
                     yaxis_title='Avg Value (AED)',
                     height=400
                 )
@@ -2640,11 +2522,7 @@ def display_advancement():
                 fig = px.bar(x=plo_inst.index, y=plo_inst.values,
                             title='📊 PLOs by Institution (Top 10)',
                             color=plo_inst.values, color_continuous_scale='Teal')
-                fig.update_layout(
-                    plot_bgcolor='rgba(0,0,0,0)',
-                    paper_bgcolor='rgba(0,0,0,0)',
-                    font=dict(color='#e2e8f0'),
-                    xaxis=dict(tickangle=-45),
+                apply_chart_theme(fig,xaxis=dict(tickangle=-45),
                     height=400
                 )
                 st.plotly_chart(fig, use_container_width=True)
@@ -2656,13 +2534,8 @@ def display_advancement():
                             title='📚 PLOs by Program (Top 10)',
                             orientation='h', color=program_dist.values,
                             color_continuous_scale='Blues')
-                fig.update_layout(
-                    plot_bgcolor='rgba(0,0,0,0)',
-                    paper_bgcolor='rgba(0,0,0,0)',
-                    font=dict(color='#e2e8f0'),
-                    yaxis={'categoryorder': 'total ascending'},
-                    height=400
-                )
+                apply_chart_theme(fig,yaxis={'categoryorder': 'total ascending'},
+                    height=400)
                 st.plotly_chart(fig, use_container_width=True)
 
         col1, col2 = st.columns(2)
@@ -2674,14 +2547,9 @@ def display_advancement():
                              title='📅 PLO Trends by Period',
                              markers=True)
                 fig.update_traces(line_color='#10b981', marker=dict(size=10))
-                fig.update_layout(
-                    plot_bgcolor='rgba(0,0,0,0)',
-                    paper_bgcolor='rgba(0,0,0,0)',
-                    font=dict(color='#e2e8f0'),
-                    xaxis_title='Period',
+                apply_chart_theme(fig,xaxis_title='Period',
                     yaxis_title='Number of PLOs',
-                    height=400
-                )
+                    height=400)
                 st.plotly_chart(fig, use_container_width=True)
 
         with col2:
@@ -2690,11 +2558,7 @@ def display_advancement():
                 fig = px.bar(x=plo_code_dist.index, y=plo_code_dist.values,
                             title='🔢 Most Common PLO Codes (Top 10)',
                             color=plo_code_dist.values, color_continuous_scale='Purples')
-                fig.update_layout(
-                    plot_bgcolor='rgba(0,0,0,0)',
-                    paper_bgcolor='rgba(0,0,0,0)',
-                    font=dict(color='#e2e8f0'),
-                    xaxis=dict(tickangle=-45),
+                apply_chart_theme(fig,xaxis=dict(tickangle=-45),
                     height=400
                 )
                 st.plotly_chart(fig, use_container_width=True)
@@ -2729,12 +2593,7 @@ def display_advancement():
                             title='🏛️ Startups by Institution',
                             color_discrete_sequence=px.colors.sequential.Greens)
                 fig.update_traces(textposition='inside', textinfo='percent+label')
-                fig.update_layout(
-                    plot_bgcolor='rgba(0,0,0,0)',
-                    paper_bgcolor='rgba(0,0,0,0)',
-                    font=dict(color='#e2e8f0'),
-                    height=400
-                )
+                apply_chart_theme(fig, height=400)
                 st.plotly_chart(fig, use_container_width=True)
 
         with col2:
@@ -2745,12 +2604,7 @@ def display_advancement():
                             hole=0.4,
                             color_discrete_sequence=px.colors.sequential.Viridis)
                 fig.update_traces(textposition='inside', textinfo='percent+label')
-                fig.update_layout(
-                    plot_bgcolor='rgba(0,0,0,0)',
-                    paper_bgcolor='rgba(0,0,0,0)',
-                    font=dict(color='#e2e8f0'),
-                    height=400
-                )
+                apply_chart_theme(fig, height=400)
                 st.plotly_chart(fig, use_container_width=True)
 
         col1, col2 = st.columns(2)
@@ -2762,14 +2616,9 @@ def display_advancement():
                              title='📅 Startup Launch Trends by Year',
                              markers=True)
                 fig.update_traces(line_color='#f59e0b', marker=dict(size=10))
-                fig.update_layout(
-                    plot_bgcolor='rgba(0,0,0,0)',
-                    paper_bgcolor='rgba(0,0,0,0)',
-                    font=dict(color='#e2e8f0'),
-                    xaxis_title='Year',
+                apply_chart_theme(fig,xaxis_title='Year',
                     yaxis_title='Number of Startups',
-                    height=400
-                )
+                    height=400)
                 st.plotly_chart(fig, use_container_width=True)
 
         with col2:
@@ -2778,11 +2627,7 @@ def display_advancement():
                 fig = px.bar(x=acad_year_dist.index, y=acad_year_dist.values,
                             title='📚 Startups by Academic Year',
                             color=acad_year_dist.values, color_continuous_scale='Blues')
-                fig.update_layout(
-                    plot_bgcolor='rgba(0,0,0,0)',
-                    paper_bgcolor='rgba(0,0,0,0)',
-                    font=dict(color='#e2e8f0'),
-                    xaxis=dict(tickangle=-45),
+                apply_chart_theme(fig,xaxis=dict(tickangle=-45),
                     height=400
                 )
                 st.plotly_chart(fig, use_container_width=True)
@@ -2937,12 +2782,7 @@ def display_data_explorer():
                         title=f"Top 20 Values in {cat_col}",
                         labels={'x': 'Count', 'y': cat_col}
                     )
-                    fig.update_layout(
-                        plot_bgcolor='rgba(0,0,0,0)',
-                        paper_bgcolor='rgba(0,0,0,0)',
-                        font=dict(color='#e2e8f0'),
-                        height=400
-                    )
+                    apply_chart_theme(fig,height=400)
                     st.plotly_chart(fig, use_container_width=True)
 
         st.markdown("---")
